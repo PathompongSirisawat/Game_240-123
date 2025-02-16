@@ -3,7 +3,7 @@ from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color, Rectangle, Line
 
 
 class MinesweeperGame(GridLayout):
@@ -16,19 +16,31 @@ class MinesweeperGame(GridLayout):
             Color(0.5, 0.5, 0.5, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
-        self.bind(size=self.update_rect, pos=self.update_rect)
+        self.bind(size=self.update_grid, pos=self.update_grid)
 
         for _ in range(self.rows * self.cols):
             btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="")
             btn.bind(on_press=self.reveal_cell)
             self.add_widget(btn)
 
-    def update_rect(self, *args):
-        self.rect.size = self.size
-        self.rect.pos = self.pos
+    def update_grid(self, *args):
+        self.canvas.after.clear()  
+
+        with self.canvas.after:
+            Color(0, 0, 0, 1)  
+            cell_width = self.width / self.cols
+            cell_height = self.height / self.rows
+
+            for i in range(1, self.cols):
+                x = self.pos[0] + i * cell_width
+                Line(points=[x, self.pos[1], x, self.pos[1] + self.size[1]], width=1)  
+
+            for i in range(1, self.rows):
+                y = self.pos[1] + i * cell_height
+                Line(points=[self.pos[0], y, self.pos[0] + self.size[0], y], width=1)  
 
     def reveal_cell(self, instance):
-        instance.text = "X"  
+        instance.text = "X"
 
 
 class MinesweeperApp(App):
