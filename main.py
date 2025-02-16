@@ -2,35 +2,46 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
-from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
+from kivy.graphics import Color, Rectangle
+
 
 class MinesweeperGame(GridLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, rows=8, cols=8, **kwargs):
         super().__init__(**kwargs)
-        self.cols = 8  # สร้างกระดาน 8x8
-        self.rows = 8
+        self.cols = cols
+        self.rows = rows
 
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
-            self.rect = Rectangle(size =self.size, pos=self.pos)
+            self.rect = Rectangle(size=self.size, pos=self.pos)
+
         self.bind(size=self.update_rect, pos=self.update_rect)
+
+        for _ in range(self.rows * self.cols):
+            btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="")
+            btn.bind(on_press=self.reveal_cell)
+            self.add_widget(btn)
 
     def update_rect(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
+    def reveal_cell(self, instance):
+        instance.text = "X"  
+
+
 class MinesweeperApp(App):
     def build(self):
-        layout = FloatLayout()
+        self.layout = FloatLayout()
 
-        with layout.canvas.before:
+        with self.layout.canvas.before:
             Color(0.8, 0.8, 0.8, 1)
-            self.rect = Rectangle(size=layout.size, pos=layout.pos)
+            self.bg_rect = Rectangle(size=self.layout.size, pos=self.layout.pos)
 
-        layout.bind(size=self.update_rect, pos=self.update_rect)
+        self.layout.bind(size=self.update_rect, pos=self.update_rect)
 
-        label = Label(
+        self.label = Label(
             text="Minesweeper",
             font_size=30,
             color=(0, 0, 0, 1),
@@ -38,52 +49,42 @@ class MinesweeperApp(App):
             height=80,
             pos_hint={"top": 1}
         )
-        layout.add_widget(label)
+        self.layout.add_widget(self.label)
 
-        button_low = Button(
-            text="Low",
-            size_hint=(0.5, None),
-            height=80,
-            pos_hint={"center_x": 0.5, "center_y": 0.6},
-            background_color=(0.5, 0.5, 0.5, 1),  # Gray color
-            background_normal=''  # Remove default background
-        )
-        button_low.bind(on_press=self.on_button_press, on_release=self.on_button_release)
+        self.create_buttons()
 
-        button_medium = Button(
-            text="Medium",
-            size_hint=(0.5, None),
-            height=80,
-            pos_hint={"center_x": 0.5, "center_y": 0.4},
-            background_color=(0.5, 0.5, 0.5, 1),  # Gray color
-            background_normal=''  # Remove default background
-        )
-        button_medium.bind(on_press=self.on_button_press, on_release=self.on_button_release)
+        return self.layout
 
-        button_high = Button(
-            text="High",
-            size_hint=(0.5, None),
-            height=80,
-            pos_hint={"center_x": 0.5, "center_y": 0.2},
-            background_color=(0.5, 0.5, 0.5, 1),  # Gray color
-            background_normal=''  # Remove default background
-        )
-        button_high.bind(on_press=self.on_button_press, on_release=self.on_button_release)
+    def create_buttons(self):
+        difficulties = [
+            ("Low", 8, 8, 0.6),
+            ("Medium", 12, 12, 0.4),
+            ("High", 16, 16, 0.2),
+        ]
 
-        layout.add_widget(button_low)
-        layout.add_widget(button_medium)
-        layout.add_widget(button_high)
-
-        return layout
+        for text, rows, cols, pos_y in difficulties:
+            button = Button(
+                text=text,
+                size_hint=(0.5, None),
+                height=80,
+                pos_hint={"center_x": 0.5, "center_y": pos_y},
+                background_color=(0.5, 0.5, 0.5, 1),
+                background_normal=''
+            )
+            button.bind(on_press=lambda btn, r=rows, c=cols: self.start_game(r, c))
+            self.layout.add_widget(button)
 
     def update_rect(self, instance, value):
-        self.rect.size = instance.size
-        self.rect.pos = instance.pos
+        self.bg_rect.size = instance.size
+        self.bg_rect.pos = instance.pos
 
-    def on_button_press(self, instance):
-        instance.background_color = (0.2, 0.2, 0.2, 0.2)  # Darker gray for shadow effect
+    def start_game(self, rows, cols):
+        existing_game = next((w for w in self.layout.children if isinstance(w, MinesweeperGame)), None)
+        if existing_game:
+            self.layout.remove_widget(existing_game)
 
-    def on_button_release(self, instance):
-        instance.background_color = (0.5, 0.5, 0.5, 1)  # Original gray color
+        game_grid = MinesweeperGame(rows=rows, cols=cols, size_hint=(1, 0.7), pos_hint={"center_x": 0.5, "y": 0.05})
+        self.layout.add_widget(game_grid)
+
 
 MinesweeperApp().run()
