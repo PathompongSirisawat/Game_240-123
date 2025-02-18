@@ -6,6 +6,41 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.graphics import Color, Rectangle
+from kivy.core.window import Window
+
+class HoverBehavior(object):
+    def __init__(self, **kwargs):
+        super(HoverBehavior, self).__init__(**kwargs)
+        Window.bind(mouse_pos=self.on_mouse_pos)
+
+    def on_mouse_pos(self, window, pos):
+        if not self.get_root_window():
+            return
+        if self.collide_point(*self.to_widget(*pos)):
+            self.on_enter()
+        else:
+            self.on_leave()
+
+    def on_enter(self):
+        pass
+
+    def on_leave(self):
+        pass
+
+class HoverButton(Button, HoverBehavior):
+    def __init__(self, **kwargs):
+        super(HoverButton, self).__init__(**kwargs)
+
+    def on_enter(self):
+        if self.background_color != [0.3, 0.3, 0.3, 1]:  # ถ้าปุ่มยังไม่ได้ถูกเลือก
+            self.background_color = [0.4, 0.4, 0.4, 1]
+
+    def on_leave(self):
+        if self.background_color != [0.3, 0.3, 0.3, 1]:  # ถ้าปุ่มยังไม่ได้ถูกเลือก
+            self.background_color = [0.5, 0.5, 0.5, 1]
+
+    def on_press(self):
+        self.background_color = [0.3, 0.3, 0.3, 1]  # เปลี่ยนสีปุ่มเมื่อกด
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
@@ -15,7 +50,7 @@ class MinesweeperGame(GridLayout):
         self.spacing = 2
 
         with self.canvas.before:
-            Color(0.5, 0.5, 0.5, 1) 
+            Color(0.5, 0.5, 0.5, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.bind(size=self.update_background, pos=self.update_background)
@@ -35,6 +70,8 @@ class MinesweeperGame(GridLayout):
 class DifficultyScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.selected_difficulty = None
+        self.difficulty_buttons = []
         layout = FloatLayout()
 
         with layout.canvas.before:
@@ -44,32 +81,56 @@ class DifficultyScreen(Screen):
         layout.bind(size=self.update_background, pos=self.update_background)
 
         title = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1),
-                      size_hint=(1, None), height=80, pos_hint={"top": 1})
+                      size_hint=(1, None), height=80, pos_hint={"center_x": 0.5, "center_y": 0.9})
         layout.add_widget(title)
 
         difficulties = [
-            ("Low", 8, 8, 0.6),
-            ("Medium", 12, 12, 0.4),
-            ("High", 16, 16, 0.2),
+            ("Low", 8, 8, 0.7),
+            ("Medium", 12, 12, 0.55),
+            ("High", 16, 16, 0.4),
         ]
 
         for text, rows, cols, pos_y in difficulties:
-            button = Button(text=text, size_hint=(0.5, None), height=80,
-                            pos_hint={"center_x": 0.5, "center_y": pos_y},
-                            background_color=(0.5, 0.5, 0.5, 1), background_normal='')
-            button.bind(on_press=self.create_start_game_callback(rows, cols))
+            button = HoverButton(text=text, size_hint=(0.5, None), height=80,
+                                 pos_hint={"center_x": 0.5, "center_y": pos_y},
+                                 background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+            button.bind(on_press=self.create_select_difficulty_callback(button, text, rows, cols))
+            self.difficulty_buttons.append(button)
             layout.add_widget(button)
+
+        start_button = Button(text="Start", size_hint=(0.3, None), height=80,
+                              pos_hint={"center_x": 0.5, "center_y": 0.25},
+                              background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+        start_button.bind(on_press=self.start_game)
+        layout.add_widget(start_button)
 
         self.add_widget(layout)
 
-    def create_start_game_callback(self, rows, cols):
-        return lambda btn: self.start_game(rows, cols)
+    def create_select_difficulty_callback(self, button, text, rows, cols):
+        def select_difficulty(instance):
+            self.selected_difficulty = (text, rows, cols)
+            self.update_button_colors(button)
+            print(f"Selected difficulty: {text}")
+
+        return select_difficulty
+
+    def update_button_colors(self, selected_button):
+        for button in self.difficulty_buttons:
+            if button == selected_button:
+                button.background_color = (0.3, 0.3, 0.3, 1)  # เปลี่ยนสีปุ่มที่เลือก
+            else:
+                button.background_color = (0.5, 0.5, 0.5, 1)  # สีปุ่มที่ไม่ถูกเลือก
 
     def update_background(self, instance, value):
         self.bg_rect.size = instance.size
         self.bg_rect.pos = instance.pos
 
-    def start_game(self, rows, cols):
+    def start_game(self, instance):
+        if not self.selected_difficulty:
+            print("Error: No difficulty selected")
+            return
+
+        rows, cols = self.selected_difficulty[1], self.selected_difficulty[2]
         if "game" not in self.manager.screen_names:
             print("Error: Screen 'game' not found in manager")
             return
@@ -77,8 +138,6 @@ class DifficultyScreen(Screen):
         print(f"Switching to game screen with {rows}x{cols}")
         self.manager.get_screen("game").start_game(rows, cols)
         self.manager.current = "game"
-
-
 
 class GameScreen(Screen):
     def __init__(self, **kwargs):
@@ -89,7 +148,7 @@ class GameScreen(Screen):
         self.top_bar = BoxLayout(size_hint_y=None, height=80, padding=[10, 10], spacing=10)
 
         with self.top_bar.canvas.before:
-            Color(0.8, 0.8, 0.8, 1)  
+            Color(0.8, 0.8, 0.8, 1)
             self.top_bg = Rectangle(size=self.top_bar.size, pos=self.top_bar.pos)
         self.top_bar.bind(size=self.update_top_background, pos=self.update_top_background)
 
@@ -102,10 +161,10 @@ class GameScreen(Screen):
         self.top_bar.add_widget(self.title_label)
 
         self.main_layout.add_widget(self.top_bar)
-        
+
         self.board_container = FloatLayout()
         with self.board_container.canvas.before:
-            Color(0.8, 0.8, 0.8, 1) 
+            Color(0.8, 0.8, 0.8, 1)
             self.bg_rect = Rectangle(size=self.board_container.size, pos=self.board_container.pos)
 
         self.board_container.bind(size=self.update_background, pos=self.update_background)
@@ -126,13 +185,12 @@ class GameScreen(Screen):
 
         self.board_container.clear_widgets()
 
-        game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9), 
+        game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
                                      pos_hint={"center_x": 0.5, "center_y": 0.5})
         self.board_container.add_widget(game_board)
 
     def go_back(self, instance):
-        self.manager.current = "difficulty"  
-
+        self.manager.current = "difficulty"
 
 class MinesweeperApp(App):
     def build(self):
@@ -141,8 +199,7 @@ class MinesweeperApp(App):
         sm.add_widget(GameScreen(name="game"))
 
         print("Available Screens:", sm.screen_names)
-        sm.current = "difficulty"  
+        sm.current = "difficulty"
         return sm
 
 MinesweeperApp().run()
-
