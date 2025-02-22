@@ -27,6 +27,11 @@ class GameScreen(Screen):
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1))
         self.top_bar.add_widget(self.title_label)
 
+        self.flag_mode_button = Button(text="Bomb Mode", size_hint=(None, None), size=(100, 50),
+                                       background_color=(0.6, 0.6, 0.6, 1), background_normal='')
+        self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
+        self.top_bar.add_widget(self.flag_mode_button)
+
         self.main_layout.add_widget(self.top_bar)
 
         self.board_container = FloatLayout()
@@ -38,6 +43,8 @@ class GameScreen(Screen):
         self.main_layout.add_widget(self.board_container)
 
         self.add_widget(self.main_layout)
+
+        self.flag_mode = False
 
     def update_top_background(self, *args):
         self.top_bg.size = self.top_bar.size
@@ -52,9 +59,15 @@ class GameScreen(Screen):
 
         self.board_container.clear_widgets()
 
-        game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
-                                     pos_hint={"center_x": 0.5, "center_y": 0.5})
-        self.board_container.add_widget(game_board)
+        self.game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
+                                          pos_hint={"center_x": 0.5, "center_y": 0.5})
+        self.board_container.add_widget(self.game_board)
 
     def go_back(self, instance):
         self.manager.current = "difficulty"
+
+    def toggle_flag_mode(self, instance):
+        self.flag_mode = not self.flag_mode
+        self.flag_mode_button.text = "Flag Mode" if self.flag_mode else "Bomb Mode"
+        if hasattr(self, 'game_board'):
+            self.game_board.flag_mode = self.flag_mode

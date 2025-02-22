@@ -10,6 +10,7 @@ class MinesweeperGame(GridLayout):
         self.rows = rows
         self.spacing = 2
         self.mines = set(random.sample(range(rows * cols), int(0.1 * rows * cols)))
+        self.flag_mode = False
 
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
@@ -20,7 +21,7 @@ class MinesweeperGame(GridLayout):
         self.buttons = []
         for i in range(self.rows * self.cols):
             btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="")
-            btn.bind(on_press=self.reveal_cell)
+            btn.bind(on_press=self.handle_click)
             self.add_widget(btn)
             self.buttons.append((btn, i))
 
@@ -28,9 +29,21 @@ class MinesweeperGame(GridLayout):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
+    def handle_click(self, instance):
+        if self.flag_mode:
+            self.toggle_flag(instance)
+        else:
+            self.reveal_cell(instance)
+    
+    def toggle_flag(self, instance):
+        if not instance.text:
+            instance.text = "Flag"
+        elif instance.text == "Flag":
+            instance.text = ""
+    
     def reveal_cell(self, instance):
         for btn, index in self.buttons:
-            if btn == instance:
+            if btn == instance and btn.text != "Flag":
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0, 0, 1)
