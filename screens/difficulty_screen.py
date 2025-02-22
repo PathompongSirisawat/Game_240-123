@@ -20,13 +20,13 @@ class DifficultyScreen(Screen):
         layout.bind(size=self.update_background, pos=self.update_background)
 
         title = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1),
-                    size_hint=(1, None), height=80, pos_hint={"center_x": 0.5, "center_y": 0.9})
+                    size_hint=(1, None), height=80, pos_hint={"center_x": 0.5, "center_y": 0.92})
         layout.add_widget(title)
 
         difficulties = [
-            ("Low", 8, 8, 0.7),
-            ("Medium", 12, 12, 0.55),
-            ("High", 16, 16, 0.4),
+            ("Low", 8, 8, 0.75),
+            ("Medium", 12, 12, 0.6),
+            ("High", 16, 16, 0.45),
         ]
 
         for text, rows, cols, pos_y in difficulties:
@@ -37,14 +37,14 @@ class DifficultyScreen(Screen):
             self.difficulty_buttons.append(button)
             layout.add_widget(button)
 
-        box_layout = BoxLayout(orientation='horizontal', size_hint=(0.6, None), height=80,
-                               pos_hint={"center_x": 0.5, "center_y": 0.25})
+        box_layout = BoxLayout(orientation='horizontal', size_hint=(0.5, None), height=80,
+                               pos_hint={"center_x": 0.5, "center_y": 0.2})
 
         self.difficulty_label = Label(text="Select Difficulty", font_size=20, color=(0, 0, 0, 1),
-                                      size_hint=(0.7, 1))
+                                      size_hint=(0.6, 1))
         box_layout.add_widget(self.difficulty_label)
 
-        start_button = Button(text="Start", size_hint=(0.3, 1),
+        start_button = Button(text="Start", size_hint=(0.4, 1),
                               background_color=(0.5, 0.5, 0.5, 1), background_normal='')
         start_button.bind(on_press=self.start_game)
         box_layout.add_widget(start_button)
