@@ -1,6 +1,7 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
+import random
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
@@ -8,6 +9,7 @@ class MinesweeperGame(GridLayout):
         self.cols = cols
         self.rows = rows
         self.spacing = 2
+        self.mines = set(random.sample(range(rows * cols), int(0.1 * rows * cols)))  
 
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
@@ -15,14 +17,22 @@ class MinesweeperGame(GridLayout):
 
         self.bind(size=self.update_background, pos=self.update_background)
 
-        for _ in range(self.rows * self.cols):
+        self.buttons = []
+        for i in range(self.rows * self.cols):
             btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="")
             btn.bind(on_press=self.reveal_cell)
             self.add_widget(btn)
+            self.buttons.append((btn, i)) 
 
     def update_background(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
     def reveal_cell(self, instance):
-        instance.text = "X"
+        for btn, index in self.buttons:
+            if btn == instance:
+                if index in self.mines:
+                    btn.text = "B"  
+                else:
+                    btn.text = "X"  
+                break
