@@ -36,4 +36,5 @@ class MinesweeperGame(GridLayout):
                     btn.background_color = (0.8, 0, 0, 1)
                 else:
                     btn.text = "X"
+                    btn.background_color = (0.6, 0.6, 0.6, 1)
                 break
