@@ -1,4 +1,4 @@
-from kivy.uix.gridlayout import GridLayout
+from kivy.uix.gridlayout import GridLayout  
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 import random
@@ -34,7 +34,18 @@ class MinesweeperGame(GridLayout):
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0, 0, 1)
+                    self.reveal_all()
                 else:
                     btn.text = "X"
                     btn.background_color = (0.6, 0.6, 0.6, 1)
                 break
+    
+    def reveal_all(self):
+        for btn, index in self.buttons:
+            if not btn.text:
+                if index in self.mines:
+                    btn.text = "B"
+                    btn.background_color = (0.8, 0, 0, 1)
+                else:
+                    btn.text = "X"
+                    btn.background_color = (0.6, 0.6, 0.6, 1)
