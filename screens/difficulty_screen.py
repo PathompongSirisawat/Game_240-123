@@ -1,6 +1,7 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 from component.hover_button import HoverButton
@@ -36,18 +37,26 @@ class DifficultyScreen(Screen):
             self.difficulty_buttons.append(button)
             layout.add_widget(button)
 
-        start_button = Button(text="Start", size_hint=(0.3, None), height=80,
-                            pos_hint={"center_x": 0.5, "center_y": 0.25},
-                            background_color=(0.5, 0.5, 0.5, 1), background_normal='')
-        start_button.bind(on_press=self.start_game)
-        layout.add_widget(start_button)
+        box_layout = BoxLayout(orientation='horizontal', size_hint=(0.6, None), height=80,
+                               pos_hint={"center_x": 0.5, "center_y": 0.25})
 
+        self.difficulty_label = Label(text="Select Difficulty", font_size=20, color=(0, 0, 0, 1),
+                                      size_hint=(0.7, 1))
+        box_layout.add_widget(self.difficulty_label)
+
+        start_button = Button(text="Start", size_hint=(0.3, 1),
+                              background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+        start_button.bind(on_press=self.start_game)
+        box_layout.add_widget(start_button)
+
+        layout.add_widget(box_layout)
         self.add_widget(layout)
 
     def create_select_difficulty_callback(self, button, text, rows, cols):
         def select_difficulty(instance):
             self.selected_difficulty = (text, rows, cols)
             self.update_button_colors(button)
+            self.difficulty_label.text = f"Selected: {text}"
             print(f"Selected difficulty: {text}")
 
         return select_difficulty
