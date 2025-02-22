@@ -26,6 +26,9 @@ class GameScreen(Screen):
 
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1))
         self.top_bar.add_widget(self.title_label)
+        
+        self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1))
+        self.top_bar.add_widget(self.remaining_flags_label)
 
         self.flag_mode_button = Button(text="Bomb Mode", size_hint=(None, None), size=(100, 50),
                                        background_color=(0.6, 0.6, 0.6, 1), background_normal='')
@@ -62,6 +65,12 @@ class GameScreen(Screen):
         self.game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
                                           pos_hint={"center_x": 0.5, "center_y": 0.5})
         self.board_container.add_widget(self.game_board)
+        
+        self.game_board.flag_update_callback = self.update_flag_count
+        self.update_flag_count(self.game_board.remaining_flags)
+
+    def update_flag_count(self, remaining_flags):
+        self.remaining_flags_label.text = f"Remaining flags: {remaining_flags}"
 
     def go_back(self, instance):
         self.manager.current = "difficulty"

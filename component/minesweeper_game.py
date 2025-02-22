@@ -11,6 +11,9 @@ class MinesweeperGame(GridLayout):
         self.spacing = 2
         self.mines = set(random.sample(range(rows * cols), int(0.1 * rows * cols)))
         self.flag_mode = False
+        self.max_flags = int(0.1 * rows * cols)
+        self.remaining_flags = self.max_flags
+        self.flag_update_callback = None
 
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
@@ -36,10 +39,15 @@ class MinesweeperGame(GridLayout):
             self.reveal_cell(instance)
     
     def toggle_flag(self, instance):
-        if not instance.text:
+        if not instance.text and self.remaining_flags > 0:
             instance.text = "Flag"
+            self.remaining_flags -= 1
         elif instance.text == "Flag":
             instance.text = ""
+            self.remaining_flags += 1
+        
+        if self.flag_update_callback:
+            self.flag_update_callback(self.remaining_flags)
     
     def reveal_cell(self, instance):
         for btn, index in self.buttons:
