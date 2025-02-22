@@ -14,6 +14,7 @@ class MinesweeperGame(GridLayout):
         self.max_flags = int(0.1 * rows * cols)
         self.remaining_flags = self.max_flags
         self.flag_update_callback = None
+        self.game_over = False
 
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
@@ -23,7 +24,7 @@ class MinesweeperGame(GridLayout):
 
         self.buttons = []
         for i in range(self.rows * self.cols):
-            btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="")
+            btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="", disabled=False)
             btn.bind(on_press=self.handle_click)
             self.add_widget(btn)
             self.buttons.append((btn, i))
@@ -33,12 +34,18 @@ class MinesweeperGame(GridLayout):
         self.rect.pos = self.pos
 
     def handle_click(self, instance):
+        if self.game_over:
+            return
+        
         if self.flag_mode:
             self.toggle_flag(instance)
         else:
             self.reveal_cell(instance)
     
     def toggle_flag(self, instance):
+        if self.game_over:
+            return
+        
         if not instance.text and self.remaining_flags > 0:
             instance.text = "Flag"
             self.remaining_flags -= 1
@@ -50,18 +57,23 @@ class MinesweeperGame(GridLayout):
             self.flag_update_callback(self.remaining_flags)
     
     def reveal_cell(self, instance):
+        if self.game_over:
+            return
+        
         for btn, index in self.buttons:
             if btn == instance and btn.text != "Flag":
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0, 0, 1)
                     self.reveal_all()
+                    self.game_over = True
                 else:
                     btn.text = "X"
                     btn.background_color = (0.6, 0.6, 0.6, 1)
                 break
     
     def reveal_all(self):
+        self.game_over = True
         for btn, index in self.buttons:
             if btn.text == "Flag":
                 if index in self.mines:
