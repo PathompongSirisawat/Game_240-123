@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Color, Rectangle
+from kivy.clock import Clock
 from component.minesweeper_game import MinesweeperGame
 
 class GameScreen(Screen):
@@ -27,13 +28,16 @@ class GameScreen(Screen):
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
         self.top_bar.add_widget(self.title_label)
         
+        self.timer_label = Label(text="Time: 00:00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
+        
         self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
         
         self.flag_mode_button = Button(text="Bomb Mode", size_hint=(None, None), size=(100, 50),
                                        background_color=(0.6, 0.6, 0.6, 1), background_normal='')
         self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
         
-        right_layout = BoxLayout(size_hint_x=None, width=310)
+        right_layout = BoxLayout(size_hint_x=None, width=460)
+        right_layout.add_widget(self.timer_label)
         right_layout.add_widget(self.remaining_flags_label)
         right_layout.add_widget(self.flag_mode_button)
         
@@ -52,6 +56,8 @@ class GameScreen(Screen):
         self.add_widget(self.main_layout)
 
         self.flag_mode = False
+        self.timer = 0
+        self.timer_event = None
 
     def update_top_background(self, *args):
         self.top_bg.size = self.top_bar.size
@@ -73,14 +79,34 @@ class GameScreen(Screen):
         self.game_board.flag_update_callback = self.update_flag_count
         self.update_flag_count(self.game_board.remaining_flags)
 
+        self.reset_timer()
+
     def update_flag_count(self, remaining_flags):
         self.remaining_flags_label.text = f"Remaining flags: {remaining_flags}"
 
     def go_back(self, instance):
         self.manager.current = "difficulty"
+        self.stop_timer()
 
     def toggle_flag_mode(self, instance):
         self.flag_mode = not self.flag_mode
         self.flag_mode_button.text = "Flag Mode" if self.flag_mode else "Bomb Mode"
         if hasattr(self, 'game_board'):
             self.game_board.flag_mode = self.flag_mode
+
+    def update_timer(self, dt):
+        self.timer += 1
+        hours, remainder = divmod(self.timer, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        self.timer_label.text = f"Time: {hours:02}:{minutes:02}:{seconds:02}"
+
+    def reset_timer(self):
+        self.timer = 0
+        self.timer_label.text = "Time: 00:00:00"
+        if self.timer_event:
+            self.timer_event.cancel()
+        self.timer_event = Clock.schedule_interval(self.update_timer, 1)
+
+    def stop_timer(self):
+        if self.timer_event:
+            self.timer_event.cancel()
