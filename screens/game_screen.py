@@ -24,16 +24,20 @@ class GameScreen(Screen):
         self.back_button.bind(on_press=self.go_back)
         self.top_bar.add_widget(self.back_button)
 
-        self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1))
+        self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
         self.top_bar.add_widget(self.title_label)
         
-        self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1))
-        self.top_bar.add_widget(self.remaining_flags_label)
-
+        self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
+        
         self.flag_mode_button = Button(text="Bomb Mode", size_hint=(None, None), size=(100, 50),
                                        background_color=(0.6, 0.6, 0.6, 1), background_normal='')
         self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
-        self.top_bar.add_widget(self.flag_mode_button)
+        
+        right_layout = BoxLayout(size_hint_x=None, width=310)
+        right_layout.add_widget(self.remaining_flags_label)
+        right_layout.add_widget(self.flag_mode_button)
+        
+        self.top_bar.add_widget(right_layout)
 
         self.main_layout.add_widget(self.top_bar)
 
