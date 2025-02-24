@@ -15,6 +15,7 @@ class MinesweeperGame(GridLayout):
         self.remaining_flags = self.max_flags
         self.flag_update_callback = None
         self.game_over = False
+        
 
         self.mine_numbers = self.calculate_mine_numbers()
 
@@ -85,7 +86,7 @@ class MinesweeperGame(GridLayout):
             if btn == instance and btn.text != "Flag":
                 if index in self.mines:
                     btn.text = "B"
-                    btn.background_color = (0.8, 0, 0, 1)
+                    btn.background_color = (0.8, 0.8, 0.8, 1)
                     self.reveal_all()
                     self.game_over = True
                 else:
