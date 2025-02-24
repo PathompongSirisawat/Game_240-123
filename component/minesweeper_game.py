@@ -89,3 +89,30 @@ class MinesweeperGame(GridLayout):
                 else:
                     btn.text = "X"
                     btn.background_color = (0.6, 0.6, 0.6, 1)
+
+    def give_hint(self):
+        if self.game_over:
+            return
+        
+        for btn, index in self.buttons:
+            if btn.text == "" and not self.is_adjacent_to_mine(index):
+                self.reveal_cell_by_index(index)
+                break
+
+    def is_adjacent_to_mine(self, index):
+        row, col = divmod(index, self.cols)
+        for r in range(row-1, row+2):
+            for c in range(col-1, col+2):
+                if 0 <= r < self.rows and 0 <= c < self.cols:
+                    if r * self.cols + c in self.mines:
+                        return True
+        return False
+
+    def reveal_cell_by_index(self, index):
+        btn, _ = self.buttons[index]
+        if index in self.mines:
+            btn.text = "B"
+            btn.background_color = (0.8, 0, 0, 1)
+        else:
+            btn.text = "X"
+            btn.background_color = (0.6, 0.6, 0.6, 1)

@@ -61,6 +61,10 @@ class GameScreen(Screen):
 
         self.add_widget(self.main_layout)
 
+        hint_button = Button(text="Hint", size_hint=(0.2, 0.1), pos_hint={"center_x": 0.5, "center_y": 0.1})
+        hint_button.bind(on_press=self.show_hint)
+        self.main_layout.add_widget(hint_button)
+
         self.flag_mode = False
         self.timer = 0
         self.timer_event = None
@@ -121,3 +125,6 @@ class GameScreen(Screen):
     def stop_timer(self):
         if self.timer_event:
             self.timer_event.cancel()
+
+    def show_hint(self, instance):
+        self.game_board.give_hint()
