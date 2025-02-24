@@ -16,6 +16,8 @@ class MinesweeperGame(GridLayout):
         self.flag_update_callback = None
         self.game_over = False
 
+        self.mine_numbers = self.calculate_mine_numbers()
+
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
@@ -28,6 +30,25 @@ class MinesweeperGame(GridLayout):
             btn.bind(on_press=self.handle_click)
             self.add_widget(btn)
             self.buttons.append((btn, i))
+    
+    def calculate_mine_numbers(self):
+        mine_numbers = {}
+        directions = [-1, 1, -self.cols, self.cols, -self.cols-1, -self.cols+1, self.cols-1, self.cols+1]
+
+        for i in range(self.rows * self.cols):
+            if i in self.mines:
+                mine_numbers[i] = -1  
+                continue
+
+            count = 0
+            for d in directions:
+                neighbor = i + d
+                if 0 <= neighbor < self.rows * self.cols and neighbor in self.mines:
+                    count += 1
+
+            mine_numbers[i] = count 
+
+        return mine_numbers
 
     def update_background(self, *args):
         self.rect.size = self.size
@@ -68,7 +89,11 @@ class MinesweeperGame(GridLayout):
                     self.reveal_all()
                     self.game_over = True
                 else:
-                    btn.text = "X"
+                    mine_count = self.mine_numbers[index]  
+                    if mine_count > 0:
+                        btn.text = str(mine_count)
+                    else:
+                            btn.text = "X"
                     btn.background_color = (0.6, 0.6, 0.6, 1)
                 break
     
