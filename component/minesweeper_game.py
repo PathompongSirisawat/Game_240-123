@@ -1,6 +1,8 @@
 from kivy.uix.gridlayout import GridLayout  
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 import random
 
 class MinesweeperGame(GridLayout):
@@ -87,6 +89,8 @@ class MinesweeperGame(GridLayout):
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0.8, 0.8, 1)
+                    self.show_popup("YOU LOSE!"
+                    ,"Oh No! You press the BOMB!")
                     self.reveal_all()
                     self.game_over = True
                 else:
@@ -96,6 +100,8 @@ class MinesweeperGame(GridLayout):
                     else:
                             btn.text = "X"
                     btn.background_color = (0.6, 0.6, 0.6, 1)
+
+                    self.check_win()
                 break
     
     def reveal_all(self):
@@ -142,3 +148,20 @@ class MinesweeperGame(GridLayout):
         else:
             btn.text = "X"
             btn.background_color = (0.6, 0.6, 0.6, 1)
+
+    def check_win(self):
+        opened_cells = sum(1 for btn, index in self.buttons if btn.text and btn.text not in ["Flag", "B"])
+        total_safe_cells = (self.rows * self.cols) - len(self.mines)
+
+        if opened_cells == total_safe_cells:
+            self.game_over = True
+            self.show_popup("🎉 YOU WIN!", "CONGRATS!🎉")
+    
+    def show_popup(self, title, message):
+        popup = Popup(
+            title=title,
+            content=Label(text=message, font_size=20),
+            size_hint=(None, None),
+            size=(400, 200),
+        )
+        popup.open()
