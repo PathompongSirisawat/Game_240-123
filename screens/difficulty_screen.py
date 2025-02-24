@@ -45,7 +45,7 @@ class DifficultyScreen(Screen):
         box_layout.add_widget(self.difficulty_label)
 
         start_button = Button(text="Start", size_hint=(0.4, 1),
-                              background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+                              background_color=(0, 0.6, 0.2, 1), background_normal='')
         start_button.bind(on_press=self.start_game)
         box_layout.add_widget(start_button)
 
