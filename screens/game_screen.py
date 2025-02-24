@@ -25,6 +25,12 @@ class GameScreen(Screen):
         self.back_button.bind(on_press=self.go_back)
         self.top_bar.add_widget(self.back_button)
 
+        self.reset_button = Button(text="Reset", size_hint=(None, None), size=(100, 50),
+                           background_color=(0.6, 0.6, 0.6, 1), background_normal='')
+
+        self.reset_button.bind(on_press=self.reset_game)
+        self.top_bar.add_widget(self.reset_button)
+
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
         self.top_bar.add_widget(self.title_label)
         
@@ -106,6 +112,11 @@ class GameScreen(Screen):
         if self.timer_event:
             self.timer_event.cancel()
         self.timer_event = Clock.schedule_interval(self.update_timer, 1)
+
+    def reset_game(self, instance):
+        if hasattr(self, "game_board"):
+            self.start_game(self.game_board.rows, self.game_board.cols)
+
 
     def stop_timer(self):
         if self.timer_event:
