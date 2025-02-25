@@ -37,20 +37,23 @@ class MinesweeperGame(GridLayout):
     
     def calculate_mine_numbers(self):
         mine_numbers = {}
-        directions = [-1, 1, -self.cols, self.cols, -self.cols-1, -self.cols+1, self.cols-1, self.cols+1]
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
         for i in range(self.rows * self.cols):
             if i in self.mines:
-                mine_numbers[i] = -1  
+                mine_numbers[i] = -1
                 continue
 
             count = 0
-            for d in directions:
-                neighbor = i + d
-                if 0 <= neighbor < self.rows * self.cols and neighbor in self.mines:
-                    count += 1
+            row, col = divmod(i, self.cols)
+            for dr, dc in directions:
+                nr, nc = row + dr, col + dc
+                if 0 <= nr < self.rows and 0 <= nc < self.cols:
+                    neighbor_index = nr * self.cols + nc
+                    if neighbor_index in self.mines:
+                        count += 1
 
-            mine_numbers[i] = count 
+            mine_numbers[i] = count
 
         return mine_numbers
 
