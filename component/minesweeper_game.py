@@ -4,6 +4,7 @@ from kivy.graphics import Color, Rectangle
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 import random
+from collections import deque
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
@@ -83,24 +84,17 @@ class MinesweeperGame(GridLayout):
     def reveal_cell(self, instance):
         if self.game_over:
             return
-        
+
         for btn, index in self.buttons:
             if btn == instance and btn.text != "Flag":
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0.8, 0.8, 1)
-                    self.show_popup("YOU LOSE!"
-                    ,"Oh No! You press the BOMB!")
+                    self.show_popup("YOU LOSE!", "Oh No! You pressed the BOMB!")
                     self.reveal_all()
                     self.game_over = True
                 else:
-                    mine_count = self.mine_numbers[index]  
-                    if mine_count > 0:
-                        btn.text = str(mine_count)
-                    else:
-                            btn.text = "X"
-                    btn.background_color = (0.6, 0.6, 0.6, 1)
-
+                    self.reveal_safe_area(index)
                     self.check_win()
                 break
     
@@ -165,3 +159,36 @@ class MinesweeperGame(GridLayout):
             size=(400, 200),
         )
         popup.open()
+        
+    def reveal_safe_area(self, start_index):
+        queue = deque([start_index])
+        visited = set()
+        
+        while queue:
+            index = queue.popleft()
+            if index in visited:
+                continue
+            visited.add(index)
+            
+            btn, _ = self.buttons[index]
+            if btn.text in ["Flag", "B"]:
+                continue
+
+            mine_count = self.mine_numbers[index]
+            if mine_count > 0:
+                btn.text = str(mine_count)
+            else:
+                btn.text = " "
+                self.add_neighbors_to_queue(index, queue, visited)
+            
+            btn.background_color = (0.6, 0.6, 0.6, 1)
+
+    def add_neighbors_to_queue(self, index, queue, visited):
+        row, col = divmod(index, self.cols)
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+        
+        for dr, dc in directions:
+            nr, nc = row + dr, col + dc
+            neighbor_index = nr * self.cols + nc
+            if 0 <= nr < self.rows and 0 <= nc < self.cols and neighbor_index not in visited:
+                queue.append(neighbor_index)
