@@ -70,6 +70,7 @@ class MinesweeperGame(GridLayout):
     def toggle_flag(self, instance):
         if self.game_over:
             return
+
         
         if not instance.text and self.remaining_flags > 0:
             instance.text = "Flag"
@@ -90,6 +91,7 @@ class MinesweeperGame(GridLayout):
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0.8, 0.8, 1)
+                    btn.disabled = True  
                     self.show_popup("YOU LOSE!", "Oh No! You pressed the BOMB!")
                     self.reveal_all()
                     self.game_over = True
@@ -97,6 +99,7 @@ class MinesweeperGame(GridLayout):
                     self.reveal_safe_area(index)
                     self.check_win()
                 break
+
     
     def reveal_all(self):
         self.game_over = True
@@ -119,11 +122,12 @@ class MinesweeperGame(GridLayout):
     def give_hint(self):
         if self.game_over:
             return
-        
+
         for btn, index in self.buttons:
-            if btn.text == "" and self.mine_numbers[index] == 0:
+            if btn.text == "" and index not in self.mines:
                 self.reveal_safe_area(index)
                 break
+
 
     def is_adjacent_to_mine(self, index):
         row, col = divmod(index, self.cols)
@@ -140,16 +144,23 @@ class MinesweeperGame(GridLayout):
             btn.text = "B"
             btn.background_color = (0.8, 0, 0, 1)
         else:
-            btn.text = "X"
-            btn.background_color = (0.6, 0.6, 0.6, 1)
+            mine_count = self.mine_numbers[index]
+            if mine_count > 0:
+                btn.text = str(mine_count)
+            else:
+                btn.text = " "
+                self.reveal_safe_area(index)  
+            
+        btn.disabled = True  
 
     def check_win(self):
-        opened_cells = sum(1 for btn, index in self.buttons if btn.text and btn.text not in ["Flag", "B"])
+        opened_cells = sum(1 for btn, index in self.buttons if btn.disabled)
         total_safe_cells = (self.rows * self.cols) - len(self.mines)
 
         if opened_cells == total_safe_cells:
             self.game_over = True
             self.show_popup("🎉 YOU WIN!", "CONGRATS!🎉")
+
     
     def show_popup(self, title, message):
         popup = Popup(
