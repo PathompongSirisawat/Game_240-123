@@ -5,6 +5,8 @@ from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Color, Rectangle
 from kivy.clock import Clock
+from kivy.uix.image import Image
+from kivy.uix.relativelayout import RelativeLayout
 from component.minesweeper_game import MinesweeperGame
 
 class GameScreen(Screen):
@@ -20,10 +22,18 @@ class GameScreen(Screen):
             self.top_bg = Rectangle(size=self.top_bar.size, pos=self.top_bar.pos)
         self.top_bar.bind(size=self.update_top_background, pos=self.update_top_background)
 
-        self.back_button = Button(text="Back", size_hint=(None, None), size=(100, 50),
-                                  background_color=(0.6, 0.6, 0.6, 1), background_normal='')
+        back_layout = RelativeLayout(size_hint=(None, None), size=(50, 50))
+        back_icon = Image(source="image/back_icon.png", size_hint=(None, None), size=(50, 50))
+        back_layout.add_widget(back_icon)
+
+        self.back_button = Button(size_hint=(None, None), size=(50, 50),
+                                    background_color=(0, 0, 0, 0),  # ทำให้ปุ่มโปร่งใส
+                                    background_normal='')
+        back_layout.add_widget(self.back_button)
         self.back_button.bind(on_press=self.go_back)
-        self.top_bar.add_widget(self.back_button)
+
+        self.top_bar.add_widget(back_layout)
+
 
         self.reset_button = Button(text="Reset", size_hint=(None, None), size=(100, 50),
                            background_color=(0.6, 0.6, 0.6, 1), background_normal='')
