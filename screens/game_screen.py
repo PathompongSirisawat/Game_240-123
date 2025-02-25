@@ -27,19 +27,25 @@ class GameScreen(Screen):
         back_layout.add_widget(back_icon)
 
         self.back_button = Button(size_hint=(None, None), size=(50, 50),
-                                    background_color=(0, 0, 0, 0),  # ทำให้ปุ่มโปร่งใส
-                                    background_normal='')
+                                  background_color=(0, 0, 0, 0),  # ทำให้ปุ่มโปร่งใส
+                                  background_normal='')
         back_layout.add_widget(self.back_button)
         self.back_button.bind(on_press=self.go_back)
 
         self.top_bar.add_widget(back_layout)
 
+        # Create the reset button with an image
+        reset_layout = RelativeLayout(size_hint=(None, None), size=(50, 50))
+        reset_icon = Image(source="image/reset_icon.png", size_hint=(None, None), size=(50, 50))
+        reset_layout.add_widget(reset_icon)
 
-        self.reset_button = Button(text="Reset", size_hint=(None, None), size=(100, 50),
-                           background_color=(0.6, 0.6, 0.6, 1), background_normal='')
-
+        self.reset_button = Button(size_hint=(None, None), size=(50, 50),
+                                   background_color=(0, 0, 0, 0),  # ทำให้ปุ่มโปร่งใส
+                                   background_normal='')
+        reset_layout.add_widget(self.reset_button)
         self.reset_button.bind(on_press=self.reset_game)
-        self.top_bar.add_widget(self.reset_button)
+
+        self.top_bar.add_widget(reset_layout)
 
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
         self.top_bar.add_widget(self.title_label)
@@ -137,7 +143,6 @@ class GameScreen(Screen):
             self.hint_counter = 0
             self.hint_button.text = f"Hint ({self.max_hints})"
             self.hint_button.disabled = False
-
 
     def stop_timer(self):
         if self.timer_event:
