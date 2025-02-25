@@ -61,14 +61,17 @@ class GameScreen(Screen):
 
         self.add_widget(self.main_layout)
 
-        hint_button = Button(text="Hint", size_hint=(0.2, 0.1), pos_hint={"center_x": 0.5, "center_y": 0.1})
+        hint_button = Button(text="Hint (10)", size_hint=(0.2, 0.1), pos_hint={"center_x": 0.5, "center_y": 0.1})
         hint_button.bind(on_press=self.show_hint)
-        self.main_layout.add_widget(hint_button)
+        self.hint_counter = 0  # ตัวนับการใช้ Hint
+        self.max_hints = 10    # กำหนดจำนวนครั้งสูงสุด
+        self.hint_button = hint_button  # เก็บ reference ปุ่มไว้
+        self.main_layout.add_widget(self.hint_button)
 
         self.flag_mode = False
         self.timer = 0
         self.timer_event = None
-
+        
     def update_top_background(self, *args):
         self.top_bg.size = self.top_bar.size
         self.top_bg.pos = self.top_bar.pos
@@ -127,4 +130,11 @@ class GameScreen(Screen):
             self.timer_event.cancel()
 
     def show_hint(self, instance):
-        self.game_board.give_hint()
+        if self.hint_counter < self.max_hints:
+            self.game_board.give_hint()
+            self.hint_counter += 1
+            remaining_hints = self.max_hints - self.hint_counter
+            self.hint_button.text = f"Hint ({remaining_hints})"
+
+            if self.hint_counter >= self.max_hints:
+                self.hint_button.disabled = True
