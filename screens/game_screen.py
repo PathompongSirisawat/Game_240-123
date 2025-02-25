@@ -123,6 +123,10 @@ class GameScreen(Screen):
     def reset_game(self, instance):
         if hasattr(self, "game_board"):
             self.start_game(self.game_board.rows, self.game_board.cols)
+            # Reset the hint counter and update the hint button text
+            self.hint_counter = 0
+            self.hint_button.text = f"Hint ({self.max_hints})"
+            self.hint_button.disabled = False
 
 
     def stop_timer(self):
