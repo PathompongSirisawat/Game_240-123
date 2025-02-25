@@ -126,7 +126,11 @@ class MinesweeperGame(GridLayout):
         for btn, index in self.buttons:
             if btn.text == "" and index not in self.mines:
                 self.reveal_safe_area(index)
+                btn.disabled = True  
+                self.check_win() 
                 break
+
+
 
 
     def is_adjacent_to_mine(self, index):
@@ -154,10 +158,9 @@ class MinesweeperGame(GridLayout):
         btn.disabled = True  
 
     def check_win(self):
-        opened_cells = sum(1 for btn, index in self.buttons if btn.disabled)
-        total_safe_cells = (self.rows * self.cols) - len(self.mines)
+        unopened_cells = sum(1 for btn, _ in self.buttons if not btn.disabled)
 
-        if opened_cells == total_safe_cells:
+        if unopened_cells == len(self.mines): 
             self.game_over = True
             self.show_popup("🎉 YOU WIN!", "CONGRATS!🎉")
 
@@ -174,13 +177,13 @@ class MinesweeperGame(GridLayout):
     def reveal_safe_area(self, start_index):
         queue = deque([start_index])
         visited = set()
-        
+
         while queue:
             index = queue.popleft()
             if index in visited:
                 continue
             visited.add(index)
-            
+
             btn, _ = self.buttons[index]
             if btn.text in ["Flag", "B"]:
                 continue
@@ -191,8 +194,10 @@ class MinesweeperGame(GridLayout):
             else:
                 btn.text = " "
                 self.add_neighbors_to_queue(index, queue, visited)
-            
+
             btn.background_color = (0.6, 0.6, 0.6, 1)
+            btn.disabled = True  
+
 
     def add_neighbors_to_queue(self, index, queue, visited):
         row, col = divmod(index, self.cols)
