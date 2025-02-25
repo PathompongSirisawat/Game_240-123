@@ -121,8 +121,8 @@ class MinesweeperGame(GridLayout):
             return
         
         for btn, index in self.buttons:
-            if btn.text == "" and not self.is_adjacent_to_mine(index):
-                self.reveal_cell_by_index(index)
+            if btn.text == "" and self.mine_numbers[index] == 0:
+                self.reveal_safe_area(index)
                 break
 
     def is_adjacent_to_mine(self, index):
