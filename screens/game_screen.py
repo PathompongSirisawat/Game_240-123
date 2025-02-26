@@ -54,14 +54,9 @@ class GameScreen(Screen):
         
         self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
         
-        self.flag_mode_button = Button(text="Bomb Mode", size_hint=(None, None), size=(100, 50),
-                                       background_color=(0.6, 0.6, 0.6, 1), background_normal='')
-        self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
-        
         right_layout = BoxLayout(size_hint_x=None, width=460)
         right_layout.add_widget(self.timer_label)
         right_layout.add_widget(self.remaining_flags_label)
-        right_layout.add_widget(self.flag_mode_button)
         
         self.top_bar.add_widget(right_layout)
 
@@ -77,12 +72,22 @@ class GameScreen(Screen):
 
         self.add_widget(self.main_layout)
 
-        hint_button = Button(text="Hint (10)", size_hint=(0.2, 0.1), pos_hint={"center_x": 0.5, "center_y": 0.1})
+        # Create a layout for the hint and flag mode buttons
+        bottom_layout = BoxLayout(size_hint=(1, 0.1), padding=[10, 10], spacing=10, pos_hint={"center_x": 0.5, "center_y": 0.1})
+
+        hint_button = Button(text="Hint (10)", size_hint=(0.2, 1))
         hint_button.bind(on_press=self.show_hint)
         self.hint_counter = 0  # ตัวนับการใช้ Hint
         self.max_hints = 10    # กำหนดจำนวนครั้งสูงสุด
         self.hint_button = hint_button  # เก็บ reference ปุ่มไว้
-        self.main_layout.add_widget(self.hint_button)
+        bottom_layout.add_widget(self.hint_button)
+
+        self.flag_mode_button = Button(text="Bomb Mode", size_hint=(0.2, 1),
+                                       background_color=(0.6, 0.6, 0.6, 1), background_normal='')
+        self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
+        bottom_layout.add_widget(self.flag_mode_button)
+
+        self.main_layout.add_widget(bottom_layout)
 
         self.flag_mode = False
         self.timer = 0
@@ -95,7 +100,7 @@ class GameScreen(Screen):
     def update_background(self, *args):
         self.bg_rect.size = self.board_container.size
         self.bg_rect.pos = self.board_container.pos
-    
+
     def start_game(self, rows, cols):
         print(f"Starting game with {rows} rows and {cols} cols")
 
@@ -104,11 +109,10 @@ class GameScreen(Screen):
         self.game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
                                           pos_hint={"center_x": 0.5, "center_y": 0.5})
         self.board_container.add_widget(self.game_board)
-    
+        
         self.game_board.flag_update_callback = self.update_flag_count
-        self.game_board.stop_timer_callback = self.stop_timer  # เชื่อม callback หยุดเวลา
-    
         self.update_flag_count(self.game_board.remaining_flags)
+
         self.reset_timer()
 
     def update_flag_count(self, remaining_flags):
@@ -150,16 +154,11 @@ class GameScreen(Screen):
             self.timer_event.cancel()
 
     def show_hint(self, instance):
-        if hasattr(self, "game_board") and not self.game_board.game_over:  # ตรวจสอบว่าเกมยังไม่จบ
-        
-            if self.hint_counter < self.max_hints:
-        
-                self.game_board.give_hint()
-                self.hint_counter += 1
-                remaining_hints = self.max_hints - self.hint_counter
-                self.hint_button.text = f"Hint ({remaining_hints})"
+        if self.hint_counter < self.max_hints:
+            self.game_board.give_hint()
+            self.hint_counter += 1
+            remaining_hints = self.max_hints - self.hint_counter
+            self.hint_button.text = f"Hint ({remaining_hints})"
 
-                if self.hint_counter >= self.max_hints:
-                    self.hint_button.disabled = True
-        else:
-            self.hint_button.disabled = True  # ปิดปุ่ม Hint เมื่อเกมจบ
+            if self.hint_counter >= self.max_hints:
+                self.hint_button.disabled = True
