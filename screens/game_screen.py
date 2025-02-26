@@ -150,11 +150,16 @@ class GameScreen(Screen):
             self.timer_event.cancel()
 
     def show_hint(self, instance):
-        if self.hint_counter < self.max_hints:
-            self.game_board.give_hint()
-            self.hint_counter += 1
-            remaining_hints = self.max_hints - self.hint_counter
-            self.hint_button.text = f"Hint ({remaining_hints})"
+        if hasattr(self, "game_board") and not self.game_board.game_over:  # ตรวจสอบว่าเกมยังไม่จบ
+        
+            if self.hint_counter < self.max_hints:
+        
+                self.game_board.give_hint()
+                self.hint_counter += 1
+                remaining_hints = self.max_hints - self.hint_counter
+                self.hint_button.text = f"Hint ({remaining_hints})"
 
-            if self.hint_counter >= self.max_hints:
-                self.hint_button.disabled = True
+                if self.hint_counter >= self.max_hints:
+                    self.hint_button.disabled = True
+        else:
+            self.hint_button.disabled = True  # ปิดปุ่ม Hint เมื่อเกมจบ
