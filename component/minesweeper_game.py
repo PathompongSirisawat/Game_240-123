@@ -75,7 +75,6 @@ class MinesweeperGame(GridLayout):
         if self.game_over:
             return
 
-        
         if not instance.text and self.remaining_flags > 0:
             instance.text = "Flag"
             self.remaining_flags -= 1
@@ -106,7 +105,6 @@ class MinesweeperGame(GridLayout):
                     self.check_win()
                 break
 
-    
     def reveal_all(self):
         self.game_over = True
         for btn, index in self.buttons:
@@ -124,7 +122,6 @@ class MinesweeperGame(GridLayout):
                 else:
                     btn.disabled = True  # เปลี่ยนจากการแสดง "X" เป็นแค่กดไม่ได้
 
-
     def give_hint(self):
         if self.game_over:
             return
@@ -135,9 +132,6 @@ class MinesweeperGame(GridLayout):
                 btn.disabled = True  
                 self.check_win() 
                 break
-
-
-
 
     def is_adjacent_to_mine(self, index):
         row, col = divmod(index, self.cols)
@@ -172,8 +166,6 @@ class MinesweeperGame(GridLayout):
             if self.stop_timer_callback:
                 self.stop_timer_callback()  # หยุดเวลา
 
-
-    
     def show_popup(self, title, message):
         popup = Popup(
             title=title,
@@ -206,7 +198,6 @@ class MinesweeperGame(GridLayout):
 
             btn.background_color = (0.6, 0.6, 0.6, 1)
             btn.disabled = True  
-
 
     def add_neighbors_to_queue(self, index, queue, visited):
         row, col = divmod(index, self.cols)

@@ -111,6 +111,7 @@ class GameScreen(Screen):
         self.board_container.add_widget(self.game_board)
         
         self.game_board.flag_update_callback = self.update_flag_count
+        self.game_board.stop_timer_callback = self.stop_timer  # Set the stop timer callback
         self.update_flag_count(self.game_board.remaining_flags)
 
         self.reset_timer()
