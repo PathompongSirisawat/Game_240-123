@@ -17,6 +17,7 @@ class MinesweeperGame(GridLayout):
         self.max_flags = int(0.1 * rows * cols)
         self.remaining_flags = self.max_flags
         self.flag_update_callback = None
+        self.stop_timer_callback = None  # เพิ่ม callback สำหรับหยุดเวลา
         self.game_over = False
         
 
@@ -98,6 +99,8 @@ class MinesweeperGame(GridLayout):
                     self.show_popup("YOU LOSE!", "Oh No! You pressed the BOMB!")
                     self.reveal_all()
                     self.game_over = True
+                    if self.stop_timer_callback:
+                        self.stop_timer_callback()  # หยุดเวลา
                 else:
                     self.reveal_safe_area(index)
                     self.check_win()
@@ -166,6 +169,9 @@ class MinesweeperGame(GridLayout):
         if unopened_cells == len(self.mines): 
             self.game_over = True
             self.show_popup("🎉 YOU WIN!", "CONGRATS!🎉")
+            if self.stop_timer_callback:
+                self.stop_timer_callback()  # หยุดเวลา
+
 
     
     def show_popup(self, title, message):

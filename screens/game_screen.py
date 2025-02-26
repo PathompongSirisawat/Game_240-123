@@ -95,7 +95,7 @@ class GameScreen(Screen):
     def update_background(self, *args):
         self.bg_rect.size = self.board_container.size
         self.bg_rect.pos = self.board_container.pos
-
+    
     def start_game(self, rows, cols):
         print(f"Starting game with {rows} rows and {cols} cols")
 
@@ -104,10 +104,11 @@ class GameScreen(Screen):
         self.game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
                                           pos_hint={"center_x": 0.5, "center_y": 0.5})
         self.board_container.add_widget(self.game_board)
-        
+    
         self.game_board.flag_update_callback = self.update_flag_count
+        self.game_board.stop_timer_callback = self.stop_timer  # เชื่อม callback หยุดเวลา
+    
         self.update_flag_count(self.game_board.remaining_flags)
-
         self.reset_timer()
 
     def update_flag_count(self, remaining_flags):
