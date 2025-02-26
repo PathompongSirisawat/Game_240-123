@@ -117,13 +117,13 @@ class MinesweeperGame(GridLayout):
                 else:
                     btn.text = "False"
                     btn.background_color = (0.7, 0.6, 0.6, 1)
-            elif not btn.text:
+            elif not btn.text:  # ปรับตรงนี้
                 if index in self.mines:
                     btn.text = "B"
                     btn.background_color = (0.8, 0, 0, 1)
                 else:
-                    btn.text = "X"
-                    btn.background_color = (0.6, 0.6, 0.6, 1)
+                    btn.disabled = True  # เปลี่ยนจากการแสดง "X" เป็นแค่กดไม่ได้
+
 
     def give_hint(self):
         if self.game_over:
