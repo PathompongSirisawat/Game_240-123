@@ -100,9 +100,8 @@ class GameScreen(Screen):
         self.bg_music = SoundLoader.load("soundeffect/song.mp3")
         if self.bg_music:
             self.bg_music.loop = True
-            self.bg_music.volume = 0.5
+            self.bg_music.volume = 0.1
             self.bg_music.play() 
-        print(self.bg_music) 
 
         
 
@@ -167,6 +166,9 @@ class GameScreen(Screen):
     def stop_timer(self):
         if self.timer_event:
             self.timer_event.cancel()
+        if hasattr(self, "game_board") and self.game_board.game_over:  
+            self.play_bomb_sound() 
+
 
     def show_hint(self, instance):
         if self.hint_counter < self.max_hints:
@@ -177,3 +179,12 @@ class GameScreen(Screen):
 
             if self.hint_counter >= self.max_hints:
                 self.hint_button.disabled = True
+                
+    def play_bomb_sound(self):
+        if self.bg_music:  
+            self.bg_music.stop()
+        
+        bomb_sound = SoundLoader.load("soundeffect/bomb.mp3")
+        if bomb_sound:
+            bomb_sound.volume = 0.2
+            bomb_sound.play()  
