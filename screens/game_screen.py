@@ -158,10 +158,21 @@ class GameScreen(Screen):
     def reset_game(self, instance):
         if hasattr(self, "game_board"):
             self.start_game(self.game_board.rows, self.game_board.cols)
+
             # Reset the hint counter and update the hint button text
             self.hint_counter = 0
             self.hint_button.text = f"Hint ({self.max_hints})"
             self.hint_button.disabled = False
+
+            if self.bg_music:
+                self.bg_music.stop()
+
+            self.bg_music = SoundLoader.load("soundeffect/song.mp3")
+            if self.bg_music:
+                self.bg_music.loop = True
+                self.bg_music.volume = 0.1
+                self.bg_music.play()  
+
 
     def stop_timer(self):
         if self.timer_event:
