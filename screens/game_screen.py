@@ -8,6 +8,9 @@ from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.uix.relativelayout import RelativeLayout
 from component.minesweeper_game import MinesweeperGame
+from kivy.core.audio import SoundLoader
+
+
 
 class GameScreen(Screen):
     def __init__(self, **kwargs):
@@ -92,6 +95,17 @@ class GameScreen(Screen):
         self.flag_mode = False
         self.timer = 0
         self.timer_event = None
+        
+        #อันนี้เพลงตอนเล่นนะจ้ะ
+        self.bg_music = SoundLoader.load("soundeffect/song.mp3")
+        if self.bg_music:
+            self.bg_music.loop = True
+            self.bg_music.volume = 0.5
+            self.bg_music.play() 
+        print(self.bg_music) 
+
+        
+
         
     def update_top_background(self, *args):
         self.top_bg.size = self.top_bar.size
