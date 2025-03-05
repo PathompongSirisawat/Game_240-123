@@ -151,6 +151,8 @@ class MinesweeperGame(GridLayout):
             mine_count = self.mine_numbers[index]
             if mine_count > 0:
                 btn.text = str(mine_count)
+                btn.markup = True  # เปิดใช้งาน markup
+                btn.text = f"[color={self.get_number_hex_color(mine_count)}]{mine_count}[/color]"
             else:
                 btn.text = " "
                 self.reveal_safe_area(index)  
@@ -191,7 +193,8 @@ class MinesweeperGame(GridLayout):
 
             mine_count = self.mine_numbers[index]
             if mine_count > 0:
-                btn.text = str(mine_count)
+                btn.markup = True 
+                btn.text = f"[color={self.get_number_hex_color(mine_count)}]{mine_count}[/color]"
             else:
                 btn.text = " "
                 self.add_neighbors_to_queue(index, queue, visited)
@@ -208,3 +211,16 @@ class MinesweeperGame(GridLayout):
             neighbor_index = nr * self.cols + nc
             if 0 <= nr < self.rows and 0 <= nc < self.cols and neighbor_index not in visited:
                 queue.append(neighbor_index)
+    
+    def get_number_hex_color(self, mine_count):
+        colors = {
+            1: "0000FF", 
+            2: "008000",  
+            3: "FF0000",  
+            4: "000080",  
+            5: "800000",  
+            6: "008080",  
+            7: "000000",  
+            8: "808080",  
+    }
+        return colors.get(mine_count, "000000")
