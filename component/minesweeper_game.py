@@ -127,12 +127,14 @@ class MinesweeperGame(GridLayout):
         if self.game_over:
             return
 
-        for btn, index in self.buttons:
-            if btn.text == "" and index not in self.mines:
-                self.reveal_safe_area(index)
-                btn.disabled = True  
-                self.check_win() 
-                break
+    # Find all safe cells that are not yet revealed
+        safe_cells = [index for index, (btn, _) in enumerate(self.buttons) if btn.text == "" and index not in self.mines]
+
+        if safe_cells:
+            hint_index = random.choice(safe_cells)  # Select a random safe cell
+            self.reveal_safe_area(hint_index)  # Reveal the safe area
+            self.buttons[hint_index][0].disabled = True  # Disable the button to mark it as revealed
+            self.check_win()  # Check if the game is won
 
     def is_adjacent_to_mine(self, index):
         row, col = divmod(index, self.cols)
