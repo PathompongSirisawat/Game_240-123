@@ -218,10 +218,19 @@ class MinesweeperGame(GridLayout):
             1: "0000FF", 
             2: "008000",  
             3: "FF0000",  
-            4: "000080",  
-            5: "800000",  
-            6: "008080",  
-            7: "000000",  
-            8: "808080",  
     }
         return colors.get(mine_count, "000000")
+    
+    def handle_click(self, instance):
+        if self.game_over:
+            return
+    
+        if self.flag_mode:
+            self.toggle_flag(instance)
+        else:
+        # ✅ สร้างเอฟเฟกต์ Animation เมื่อคลิก
+            anim = Animation(background_color=(1, 1, 1, 1), duration=0.1) + \
+               Animation(background_color=(0.7, 0.7, 0.7, 1), duration=0.1)
+        anim.start(instance)  # เริ่มทำ Animation
+        
+        self.reveal_cell(instance)  # เผยข้อมูลช่อง

@@ -207,10 +207,10 @@ class GameScreen(Screen):
             bomb_sound.play()  
 
     def toggle_pause(self, instance):
-        if self.timer_event:  # ตรวจสอบว่ามีการจับเวลาหรือไม่
-            if self.timer_event.is_triggered:  # ✅ ตรวจสอบว่า Timer กำลังทำงานอยู่หรือไม่
-                self.timer_event.cancel()  # หยุดจับเวลา
+        if self.timer_event:  
+            if self.timer_event.is_triggered:  
+                self.timer_event.cancel()  
                 self.pause_button.text = "▶ Resume"
             else:
-                self.timer_event = Clock.schedule_interval(self.update_timer, 1)  # เริ่มจับเวลาใหม่
+                self.timer_event = Clock.schedule_interval(self.update_timer, 1)  
                 self.pause_button.text = "⏸ Pause"
