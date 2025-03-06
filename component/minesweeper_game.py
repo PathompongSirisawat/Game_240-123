@@ -187,7 +187,7 @@ class MinesweeperGame(GridLayout):
     def show_popup(self, title, message):
         popup = Popup(
             title=title,
-            content=Label(text=f"{message}\nYour Score: {self.score}", font_size=20),
+            content=Label(text=message, font_size=20),
             size_hint=(None, None),
             size=(400, 200),
         )
