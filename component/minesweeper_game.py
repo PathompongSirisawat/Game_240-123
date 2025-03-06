@@ -19,10 +19,13 @@ class MinesweeperGame(GridLayout):
         self.max_flags = int(0.1 * rows * cols)
         self.remaining_flags = self.max_flags
         self.flag_update_callback = None
-        self.stop_timer_callback = None  # เพิ่ม callback สำหรับหยุดเวลา
+        self.stop_timer_callback = None  
         self.game_over = False
         self.hint_button = Button(text="Hint")      
         self.mine_numbers = self.calculate_mine_numbers()
+        self.score = 0 
+        self.score_update_callback = None  
+
 
         with self.canvas.before:
             Color(0.5, 0.5, 0.5, 1)
@@ -96,7 +99,7 @@ class MinesweeperGame(GridLayout):
                     btn.text = "B"
                     btn.background_color = (0.8, 0.8, 0.8, 1)
                     btn.disabled = True  
-                    self.show_popup("YOU LOSE!", "Oh No! You pressed the BOMB!")
+                    self.show_popup("YOU LOSE!", f"Oh No! You pressed the BOMB!\nYour Score: {self.score}")
                     self.reveal_all()
                     self.game_over = True
                     if self.stop_timer_callback:
@@ -123,6 +126,12 @@ class MinesweeperGame(GridLayout):
                     btn.background_color = (0.8, 0, 0, 1)
                 else:
                     btn.disabled = True  # เปลี่ยนจากการแสดง "X" เป็นแค่กดไม่ได้
+    
+    def update_score(self):
+        if not self.game_over:
+            self.score += 10  # เพิ่ม 10 คะแนนต่อช่องที่เปิดได้
+            if self.score_update_callback:
+                self.score_update_callback(self.score)
 
     def give_hint(self):
         if self.game_over:
@@ -168,7 +177,7 @@ class MinesweeperGame(GridLayout):
 
         if unopened_cells == len(self.mines): 
             self.game_over = True
-            self.show_popup("YOU WIN!", "CONGRATS!")
+            self.show_popup("YOU WIN!", f"CONGRATS!\nYour Score: {self.score}")
             if self.stop_timer_callback:
                 self.stop_timer_callback()  # หยุดเวลา
             if self.flag_update_callback:
@@ -178,7 +187,7 @@ class MinesweeperGame(GridLayout):
     def show_popup(self, title, message):
         popup = Popup(
             title=title,
-            content=Label(text=message, font_size=20),
+            content=Label(text=f"{message}\nYour Score: {self.score}", font_size=20),
             size_hint=(None, None),
             size=(400, 200),
         )
@@ -206,8 +215,9 @@ class MinesweeperGame(GridLayout):
                 btn.text = " "
                 self.add_neighbors_to_queue(index, queue, visited)
 
-            btn.background_color = (0.6, 0.6, 0.6, 1)
+            btn.background_color = (245, 245, 220)
             btn.disabled = True  
+            self.update_score()
 
     def add_neighbors_to_queue(self, index, queue, visited):
         row, col = divmod(index, self.cols)
@@ -234,10 +244,9 @@ class MinesweeperGame(GridLayout):
         if self.flag_mode:
             self.toggle_flag(instance)
         else:
-        # ✅ สร้างเอฟเฟกต์ Animation เมื่อคลิก
             anim = Animation(background_color=(1, 1, 1, 1), duration=0.1) + \
                Animation(background_color=(0.7, 0.7, 0.7, 1), duration=0.1)
-            anim.start(instance)  # เริ่มทำ Animation
+            anim.start(instance)  
         
-        self.reveal_cell(instance)  # เผยข้อมูลช่อง
+        self.reveal_cell(instance)  
 
