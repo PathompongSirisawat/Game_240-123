@@ -73,6 +73,7 @@ class MinesweeperGame(GridLayout):
         if self.flag_mode:
             self.toggle_flag(instance)
         else:
+            self.animate_button_press(instance)
             self.reveal_cell(instance)
     
     def toggle_flag(self, instance):
@@ -236,6 +237,10 @@ class MinesweeperGame(GridLayout):
             3: "FF0000",  
     }
         return colors.get(mine_count, "000000")
+
+    def animate_button_press(self, btn):
+        anim = Animation(size_hint=(1.1, 1.1), duration=0.1) + Animation(size_hint=(1, 1), duration=0.1)
+        anim.start(btn)
     
     def handle_click(self, instance):
         if self.game_over:
