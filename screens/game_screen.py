@@ -9,13 +9,13 @@ from kivy.uix.image import Image
 from kivy.uix.relativelayout import RelativeLayout
 from component.minesweeper_game import MinesweeperGame
 from kivy.core.audio import SoundLoader
-
-
+from kivy.core.window import Window
 
 class GameScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
+        Window.size = (800, 600)  # กำหนดขนาดเริ่มต้น (ปรับตามต้องการ)
+        Window.resizable = False
         self.main_layout = BoxLayout(orientation="vertical")
 
         self.top_bar = BoxLayout(size_hint_y=None, height=80, padding=[10, 10], spacing=10)
@@ -188,6 +188,9 @@ class GameScreen(Screen):
 
 
     def show_hint(self, instance):
+        if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
+            return
+        
         if self.hint_counter < self.max_hints:
             self.game_board.give_hint()
             self.hint_counter += 1

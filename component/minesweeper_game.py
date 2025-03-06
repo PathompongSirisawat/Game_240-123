@@ -7,6 +7,7 @@ import random
 from collections import deque
 from kivy.animation import Animation
 
+
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
         super().__init__(**kwargs)
@@ -20,8 +21,7 @@ class MinesweeperGame(GridLayout):
         self.flag_update_callback = None
         self.stop_timer_callback = None  # เพิ่ม callback สำหรับหยุดเวลา
         self.game_over = False
-        
-
+        self.hint_button = Button(text="Hint")      
         self.mine_numbers = self.calculate_mine_numbers()
 
         with self.canvas.before:
@@ -29,14 +29,19 @@ class MinesweeperGame(GridLayout):
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.bind(size=self.update_background, pos=self.update_background)
-
+        
         self.buttons = []
         for i in range(self.rows * self.cols):
-            btn = Button(background_color=(0.7, 0.7, 0.7, 1), background_normal="", disabled=False)
+            btn = Button(
+                background_color=(0.7, 0.7, 0.7, 1),
+                background_normal="",
+                disabled=False,
+                
+            )
             btn.bind(on_press=self.handle_click)
             self.add_widget(btn)
             self.buttons.append((btn, i))
-    
+                
     def calculate_mine_numbers(self):
         mine_numbers = {}
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
@@ -101,11 +106,12 @@ class MinesweeperGame(GridLayout):
                     self.game_over = True
                     if self.stop_timer_callback:
                         self.stop_timer_callback()  # หยุดเวลา
+                    self.hint_button.disabled = True
                 else:
                     self.reveal_safe_area(index)
                     self.check_win()
                 break
-
+                
     def reveal_all(self):
         self.game_over = True
         for btn, index in self.buttons:
@@ -170,6 +176,9 @@ class MinesweeperGame(GridLayout):
             self.show_popup("YOU WIN!", "CONGRATS!")
             if self.stop_timer_callback:
                 self.stop_timer_callback()  # หยุดเวลา
+            if self.flag_update_callback:
+                self.flag_update_callback(0)  # รีเซ็ตจำนวนธง
+            self.hint_button.disabled = True
 
     def show_popup(self, title, message):
         popup = Popup(
@@ -233,6 +242,7 @@ class MinesweeperGame(GridLayout):
         # ✅ สร้างเอฟเฟกต์ Animation เมื่อคลิก
             anim = Animation(background_color=(1, 1, 1, 1), duration=0.1) + \
                Animation(background_color=(0.7, 0.7, 0.7, 1), duration=0.1)
-        anim.start(instance)  # เริ่มทำ Animation
+            anim.start(instance)  # เริ่มทำ Animation
         
         self.reveal_cell(instance)  # เผยข้อมูลช่อง
+
