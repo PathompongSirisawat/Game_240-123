@@ -6,7 +6,7 @@ from kivy.uix.label import Label
 import random
 from collections import deque
 from kivy.animation import Animation
-
+from kivy.uix.boxlayout import BoxLayout
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
@@ -178,20 +178,34 @@ class MinesweeperGame(GridLayout):
 
         if unopened_cells == len(self.mines): 
             self.game_over = True
+            self.save_high_score()  
+            high_score = self.load_high_score()
             self.show_popup("YOU WIN!", f"CONGRATS!\nYour Score: {self.score}")
             if self.stop_timer_callback:
                 self.stop_timer_callback()  # หยุดเวลา
             if self.flag_update_callback:
                 self.flag_update_callback(0)  # รีเซ็ตจำนวนธง
             self.hint_button.disabled = True
+    
+    def restart_game(self, instance=None):
+        self.clear_widgets()  # ลบปุ่มเก่าออกจาก GridLayout
+        self.__init__(rows=self.rows, cols=self.cols)  # 
 
     def show_popup(self, title, message):
+        box = BoxLayout(orientation='vertical', spacing=10)
+        label = Label(text=message, font_size=20)
+        restart_button = Button(text="🔄 Restart", size_hint=(None, None), size=(150, 50))
+        restart_button.bind(on_press=self.restart_game)
+
+        box.add_widget(label)
+        box.add_widget(restart_button)
+
         popup = Popup(
-            title=title,
-            content=Label(text=message, font_size=20),
-            size_hint=(None, None),
-            size=(400, 200),
-        )
+        title=title,
+        content=box,
+        size_hint=(None, None),
+        size=(400, 200),
+    )
         popup.open()
         
     def reveal_safe_area(self, start_index):
@@ -216,7 +230,7 @@ class MinesweeperGame(GridLayout):
                 btn.text = " "
                 self.add_neighbors_to_queue(index, queue, visited)
 
-            btn.background_color = (245, 245, 220)
+            self.animate_reveal(btn, (0.9, 0.9, 0.7, 1))
             btn.disabled = True  
             self.update_score()
 
@@ -240,6 +254,10 @@ class MinesweeperGame(GridLayout):
 
     def animate_button_press(self, btn):
         anim = Animation(size_hint=(1.1, 1.1), duration=0.1) + Animation(size_hint=(1, 1), duration=0.1)
+        anim.start(btn)
+    
+    def animate_reveal(self, btn, color):
+        anim = Animation(background_color=color, duration=0.2)
         anim.start(btn)
     
     def handle_click(self, instance):
