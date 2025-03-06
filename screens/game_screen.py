@@ -53,6 +53,12 @@ class GameScreen(Screen):
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
         self.top_bar.add_widget(self.title_label)
         
+
+        self.pause_button = Button(text="⏸ Pause", size_hint=(None, None), size=(100, 50))
+        self.pause_button.bind(on_press=self.toggle_pause)
+        self.top_bar.add_widget(self.pause_button)
+
+        
         self.timer_label = Label(text="Time: 00:00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
         
         self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
@@ -199,3 +205,12 @@ class GameScreen(Screen):
         if bomb_sound:
             bomb_sound.volume = 0.2
             bomb_sound.play()  
+
+    def toggle_pause(self, instance):
+        if self.timer_event:  # ตรวจสอบว่ามีการจับเวลาหรือไม่
+            if self.timer_event.is_triggered:  # ✅ ตรวจสอบว่า Timer กำลังทำงานอยู่หรือไม่
+                self.timer_event.cancel()  # หยุดจับเวลา
+                self.pause_button.text = "▶ Resume"
+            else:
+                self.timer_event = Clock.schedule_interval(self.update_timer, 1)  # เริ่มจับเวลาใหม่
+                self.pause_button.text = "⏸ Pause"

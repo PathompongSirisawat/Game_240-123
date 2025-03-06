@@ -5,6 +5,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 import random
 from collections import deque
+from kivy.animation import Animation
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
