@@ -101,18 +101,19 @@ class MinesweeperGame(GridLayout):
             if btn == instance and btn.text != "Flag":
                 if index in self.mines:
                     btn.text = "B"
-                    btn.background_color = (0.8, 0.8, 0.8, 1)
+                    btn.background_normal = "image/bomb.jpg" 
                     btn.disabled = True  
                     self.show_popup("YOU LOSE!", f"Oh No! You pressed the BOMB!\nYour Score: {self.score}")
                     self.reveal_all()
                     self.game_over = True
                     if self.stop_timer_callback:
-                        self.stop_timer_callback()  # หยุดเวลา
+                        self.stop_timer_callback()  
                     self.hint_button.disabled = True
                 else:
                     self.reveal_safe_area(index)
                     self.check_win()
                 break
+
                 
     def reveal_all(self):
         self.game_over = True
@@ -124,12 +125,13 @@ class MinesweeperGame(GridLayout):
                 else:
                     btn.text = "False"
                     btn.background_color = (0.7, 0.6, 0.6, 1)
-            elif not btn.text:  # ปรับตรงนี้
+            elif not btn.text:  
                 if index in self.mines:
-                    btn.text = "B"
-                    btn.background_color = (0.8, 0, 0, 1)
+                    btn.text = ""
+                    btn.background_normal = "image/bomb.jpg"  
                 else:
-                    btn.disabled = True  # เปลี่ยนจากการแสดง "X" เป็นแค่กดไม่ได้
+                    btn.disabled = True  
+
     
     def update_score(self):
         if not self.game_over:

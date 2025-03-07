@@ -142,9 +142,13 @@ class GameScreen(Screen):
 
     def toggle_flag_mode(self, instance):
         self.flag_mode = not self.flag_mode
-        self.flag_mode_button.text = "Flag Mode" if self.flag_mode else "Bomb Mode"
+        if self.flag_mode:
+            self.flag_mode_button.text = "Flag Mode"
+        else:
+            self.flag_mode_button.text = "Bomb Mode"
         if hasattr(self, 'game_board'):
             self.game_board.flag_mode = self.flag_mode
+
 
     def update_timer(self, dt):
         self.timer += 1
