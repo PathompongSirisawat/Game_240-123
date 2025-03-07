@@ -80,9 +80,11 @@ class MinesweeperGame(GridLayout):
     def toggle_flag(self, instance):
         if self.game_over:
             return
-
         if not instance.text and self.remaining_flags > 0:
             instance.text = "Flag"
+            instance.color = (0, 0, 0, 0)
+            instance.background_normal = "image/flag.jpg"
+            instance.size = (10, 10)
             self.remaining_flags -= 1
         elif instance.text == "Flag":
             instance.text = ""

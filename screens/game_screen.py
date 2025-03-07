@@ -123,7 +123,7 @@ class GameScreen(Screen):
 
         self.board_container.clear_widgets()
 
-        self.game_board = MinesweeperGame(size_hint=(0.9, 0.9),
+        self.game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
                                           pos_hint={"center_x": 0.5, "center_y": 0.5})
         self.board_container.add_widget(self.game_board)
         
