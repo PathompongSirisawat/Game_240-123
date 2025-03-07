@@ -7,15 +7,18 @@ from kivy.graphics import Color, Rectangle
 from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.uix.relativelayout import RelativeLayout
-from component.minesweeper_game import MinesweeperGame
 from kivy.core.audio import SoundLoader
-from kivy.core.window import Window
+from kivy.core.window import Window  # Import the Window module
+from component.minesweeper_game import MinesweeperGame
 
 class GameScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Window.size = (800, 600)  # กำหนดขนาดเริ่มต้น (ปรับตามต้องการ)
-        Window.resizable = False
+
+        # Set the window size and disable resizing
+        Window.size = (800, 600)  # Set the desired window size
+        Window.resizable = False  # Disable window resizing
+
         self.main_layout = BoxLayout(orientation="vertical")
 
         self.top_bar = BoxLayout(size_hint_y=None, height=80, padding=[10, 10], spacing=10)
@@ -53,12 +56,6 @@ class GameScreen(Screen):
         self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
         self.top_bar.add_widget(self.title_label)
         
-
-        self.pause_button = Button(text="⏸ Pause", size_hint=(None, None), size=(100, 50))
-        self.pause_button.bind(on_press=self.toggle_pause)
-        self.top_bar.add_widget(self.pause_button)
-
-        
         self.timer_label = Label(text="Time: 00:00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
         
         self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
@@ -81,7 +78,7 @@ class GameScreen(Screen):
 
         self.add_widget(self.main_layout)
 
-        # Create a layout for the hint and flag mode buttons
+        # Create a layout for the hint, flag mode, and pause buttons
         bottom_layout = BoxLayout(size_hint=(1, 0.1), padding=[10, 10], spacing=10, pos_hint={"center_x": 0.5, "center_y": 0.1})
 
         hint_button = Button(text="Hint (10)", size_hint=(0.2, 1))
@@ -96,6 +93,10 @@ class GameScreen(Screen):
         self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
         bottom_layout.add_widget(self.flag_mode_button)
 
+        self.pause_button = Button(text="Pause", size_hint=(0.2, 1))
+        self.pause_button.bind(on_press=self.toggle_pause)
+        bottom_layout.add_widget(self.pause_button)
+
         self.main_layout.add_widget(bottom_layout)
 
         self.flag_mode = False
@@ -109,9 +110,6 @@ class GameScreen(Screen):
             self.bg_music.volume = 0.1
             self.bg_music.play() 
 
-        
-
-        
     def update_top_background(self, *args):
         self.top_bg.size = self.top_bar.size
         self.top_bg.pos = self.top_bar.pos
@@ -125,7 +123,7 @@ class GameScreen(Screen):
 
         self.board_container.clear_widgets()
 
-        self.game_board = MinesweeperGame(rows=rows, cols=cols, size_hint=(0.9, 0.9),
+        self.game_board = MinesweeperGame(size_hint=(0.9, 0.9),
                                           pos_hint={"center_x": 0.5, "center_y": 0.5})
         self.board_container.add_widget(self.game_board)
         
@@ -179,13 +177,11 @@ class GameScreen(Screen):
                 self.bg_music.volume = 0.1
                 self.bg_music.play()  
 
-
     def stop_timer(self):
         if self.timer_event:
             self.timer_event.cancel()
         if hasattr(self, "game_board") and self.game_board.game_over:  
             self.play_bomb_sound() 
-
 
     def show_hint(self, instance):
         if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
@@ -213,7 +209,7 @@ class GameScreen(Screen):
         if self.timer_event:  
             if self.timer_event.is_triggered:  
                 self.timer_event.cancel()  
-                self.pause_button.text = "▶ Resume"
+                self.pause_button.text = "Resume"
             else:
                 self.timer_event = Clock.schedule_interval(self.update_timer, 1)  
-                self.pause_button.text = "⏸ Pause"
+                self.pause_button.text = "Pause"
