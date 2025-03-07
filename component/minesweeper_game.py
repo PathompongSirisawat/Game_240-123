@@ -7,6 +7,7 @@ import random
 from collections import deque
 from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
@@ -188,25 +189,51 @@ class MinesweeperGame(GridLayout):
             self.hint_button.disabled = True
     
     def restart_game(self, instance=None):
-        self.clear_widgets()  # ลบปุ่มเก่าออกจาก GridLayout
+        self.clear_widgets()  
         self.__init__(rows=self.rows, cols=self.cols)  # 
 
+    
+
     def show_popup(self, title, message):
-        box = BoxLayout(orientation='vertical', spacing=10)
-        label = Label(text=message, font_size=20)
-        restart_button = Button(text="🔄 Restart", size_hint=(None, None), size=(150, 50))
+        box = BoxLayout(orientation='vertical', spacing=10, padding=20)
+
+    
+        content_layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        content_layout.bind(minimum_height=content_layout.setter('height'))  
+
+        icon = Image(source="image/success.png" if "WIN" in title else "image/lose.png",
+                 size_hint=(None, None), size=(80, 80))
+
+        label = Label(text=message, font_size=22, bold=True,
+                  color=(0, 0, 0, 1), size_hint_y=None, height=50)
+
+        icon_text_layout = BoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
+        icon_text_layout.add_widget(icon)
+        icon_text_layout.add_widget(label)
+
+        content_layout.add_widget(icon_text_layout)
+
+        restart_button = Button(
+            text="🔄 Restart", size_hint=(None, None), size=(160, 50),
+            background_color=(0.2, 0.6, 1, 1), 
+            color=(1, 1, 1, 1),  
+            font_size=18, bold=True
+        )
         restart_button.bind(on_press=self.restart_game)
 
-        box.add_widget(label)
+        box.add_widget(content_layout)
         box.add_widget(restart_button)
 
         popup = Popup(
-        title=title,
-        content=box,
-        size_hint=(None, None),
-        size=(400, 200),
-    )
+            title=title,
+            content=box,
+            size_hint=(None, None),
+            size=(420, 250),
+            background="popup_bg.png",
+            separator_color=(1, 0.5, 0, 1),
+        )
         popup.open()
+
         
     def reveal_safe_area(self, start_index):
         queue = deque([start_index])
