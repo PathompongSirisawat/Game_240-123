@@ -197,8 +197,9 @@ class MinesweeperGame(GridLayout):
     def show_popup(self, title, message):
         box = BoxLayout(orientation='vertical', spacing=10, padding=20)
 
-    # GridLayout สำหรับไอคอนและข้อความ
+    # ใช้ GridLayout เพื่อให้ไอคอนและข้อความอยู่แยกกัน
         content_layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        content_layout.bind(minimum_height=content_layout.setter('height'))  # ให้ปรับขนาดตามเนื้อหา
 
     # ไอคอนแสดงสถานะ ชนะ/แพ้
         icon = Image(source="image/success.png" if "WIN" in title else "image/lose.png",
@@ -208,9 +209,13 @@ class MinesweeperGame(GridLayout):
         label = Label(text=message, font_size=22, bold=True,
                   color=(0, 0, 0, 1), size_hint_y=None, height=50)
 
-    # เพิ่มไอคอนและข้อความเข้าไปใน content_layout
-        content_layout.add_widget(icon)
-        content_layout.add_widget(label)
+    # ใช้ BoxLayout แยก Icon และข้อความ เพื่อให้แนวตั้งจัดเรียงถูกต้อง
+        icon_text_layout = BoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
+        icon_text_layout.add_widget(icon)
+        icon_text_layout.add_widget(label)
+
+    # เพิ่ม Icon+ข้อความ ลงใน GridLayout
+        content_layout.add_widget(icon_text_layout)
 
     # ปุ่ม Restart
         restart_button = Button(
@@ -221,7 +226,7 @@ class MinesweeperGame(GridLayout):
         )
         restart_button.bind(on_press=self.restart_game)
 
-    # เพิ่ม GridLayout และปุ่มลงใน BoxLayout
+    # เพิ่มทุกอย่างเข้าไปใน BoxLayout
         box.add_widget(content_layout)
         box.add_widget(restart_button)
 
