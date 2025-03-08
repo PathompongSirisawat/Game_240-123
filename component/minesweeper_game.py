@@ -139,10 +139,13 @@ class MinesweeperGame(GridLayout):
 
         if safe_cells:
             hint_index = random.choice(safe_cells)  # Select a random safe cell
-            self.reveal_safe_area(hint_index)  # Reveal the safe area
-            self.buttons[hint_index][0].disabled = True  # Disable the button to mark it as revealed
-            self.check_win()  # Check if the game is won
+            btn, _ = self.buttons[hint_index]
 
+            def blink(dt):
+                btn.background_color = (1, 1, 0, 1)  
+            Clock.schedule_once(lambda dt: setattr(btn, 'background_color', (0.54, 0.79, 0.22, 1)), 0.5)
+        
+        Clock.schedule_once(blink, 0)
     def is_adjacent_to_mine(self, index):
         row, col = divmod(index, self.cols)
         for r in range(row-1, row+2):
@@ -190,7 +193,7 @@ class MinesweeperGame(GridLayout):
         
             new_game = MinesweeperGame(rows=self.rows, cols=self.cols)
             new_game.score_update_callback = self.score_update_callback  
-            
+
             new_game.size_hint = self.size_hint
             new_game.size = self.size
             new_game.pos = self.pos
