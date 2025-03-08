@@ -213,6 +213,8 @@ class GameScreen(Screen):
             bomb_sound.play()  
 
     def toggle_pause(self, instance):
+        if self.game_board.game_over:  
+            return
         
         if self.timer_event:  
             if self.timer_event.is_triggered:  
