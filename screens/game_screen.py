@@ -161,7 +161,6 @@ class GameScreen(Screen):
         else:
             self.flag_mode_button.text = "Bomb Mode"
             self.flag_mode_button.background_color = (0.6, 0.2, 0.2, 1)
-            
         if hasattr(self, 'game_board'):
             self.game_board.flag_mode = self.flag_mode
 
@@ -209,7 +208,7 @@ class GameScreen(Screen):
 
     def show_hint(self, instance):
         if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
-            return
+            return 
         
         if self.hint_counter < self.max_hints:
             self.game_board.give_hint()
@@ -218,6 +217,7 @@ class GameScreen(Screen):
             self.hint_button.text = f"Hint ({remaining_hints})"
 
             if self.hint_counter >= self.max_hints:
+                self.hint_button.text = "No hints available!"
                 self.hint_button.disabled = True
                 
     def play_bomb_sound(self):
