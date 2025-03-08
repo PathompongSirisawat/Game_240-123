@@ -145,6 +145,15 @@ class GameScreen(Screen):
     def go_back(self, instance):
         self.manager.current = "difficulty"
         self.stop_timer()
+        
+        if self.bg_music:
+            self.bg_music.stop()
+
+        self.bg_music = SoundLoader.load("soundeffect/song.mp3")
+        if self.bg_music:
+            self.bg_music.loop = True
+            self.bg_music.volume = 0.5
+            self.bg_music.play()
 
     def toggle_flag_mode(self, instance):
         if self.game_board.game_over:  
@@ -217,10 +226,11 @@ class GameScreen(Screen):
         if self.bg_music:  
             self.bg_music.stop()
         
-        bomb_sound = SoundLoader.load("soundeffect/bomb.mp3")
-        if bomb_sound:
-            bomb_sound.volume = 0.2
-            bomb_sound.play()  
+        self.bg_music = SoundLoader.load("soundeffect/bomb.mp3")
+        if self.bg_music:
+            self.bg_music.volume = 0.2
+            self.bg_music.play()  
+        
 
     def toggle_pause(self, instance):
         if self.game_board.game_over:  
