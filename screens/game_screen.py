@@ -157,8 +157,11 @@ class GameScreen(Screen):
         self.flag_mode = not self.flag_mode
         if self.flag_mode:
             self.flag_mode_button.text = "Flag Mode"
+            self.flag_mode_button.background_color = (0.2, 0.6, 0.2, 1)
         else:
             self.flag_mode_button.text = "Bomb Mode"
+            self.flag_mode_button.background_color = (0.6, 0.2, 0.2, 1)
+            
         if hasattr(self, 'game_board'):
             self.game_board.flag_mode = self.flag_mode
 
@@ -239,4 +242,6 @@ class GameScreen(Screen):
                 self.pause_button.text = "Pause"
     
     def update_stats_label(self):
-        self.stats_label.text = f"Wins: {self.win_count} | Losses: {self.lose_count}"
+        new_text = f"Wins: {self.win_count} | Losses: {self.lose_count}"
+        if self.stats_label.text != new_text:  
+            self.stats_label.text = new_text
