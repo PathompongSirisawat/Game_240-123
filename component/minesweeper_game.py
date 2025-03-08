@@ -177,9 +177,8 @@ class MinesweeperGame(GridLayout):
 
         if unopened_cells == len(self.mines): 
             self.game_over = True
-            self.save_high_score()  
-            high_score = self.load_high_score()
             self.show_popup("YOU WIN!", f"CONGRATS!\nYour Score: {self.score}")
+            
             if self.stop_timer_callback:
                 self.stop_timer_callback()  # หยุดเวลา
             if self.flag_update_callback:
