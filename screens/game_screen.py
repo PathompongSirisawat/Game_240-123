@@ -63,11 +63,9 @@ class GameScreen(Screen):
 
         self.timer_label = Label(text="Time: 00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
         self.remaining_flags_label = Label(text="flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
-        self.stats_label = Label(text="Wins: 0 | Losses: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
 
         right_layout.add_widget(self.timer_label)
         right_layout.add_widget(self.remaining_flags_label)
-        right_layout.add_widget(self.stats_label)
 
         self.top_bar.add_widget(left_layout)
         self.top_bar.add_widget(center_layout)
@@ -136,7 +134,6 @@ class GameScreen(Screen):
         
         self.game_board.flag_update_callback = self.update_flag_count
         self.game_board.stop_timer_callback = self.stop_timer  # Set the stop timer callback
-        self.game_board.win_callback = self.update_win_count  # เพิ่ม callback เมื่อชนะ
 
         self.update_flag_count(self.game_board.remaining_flags)
 
