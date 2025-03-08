@@ -114,7 +114,7 @@ class GameScreen(Screen):
         self.bg_music = SoundLoader.load("soundeffect/song.mp3")
         if self.bg_music:
             self.bg_music.loop = True
-            self.bg_music.volume = 0.1
+            self.bg_music.volume = 0.5
             self.bg_music.play() 
 
     def update_top_background(self, *args):
