@@ -204,9 +204,7 @@ class GameScreen(Screen):
         if self.timer_event:
             self.timer_event.cancel()
         if hasattr(self, "game_board") and self.game_board.game_over:  
-            self.play_bomb_sound() 
-        if hasattr(self, "game_board") and self.game_board.game_over:  
-            self.lose_count += 1  # เพิ่มจำนวนครั้งที่แพ้
+            self.play_end_game_sound() 
 
     def show_hint(self, instance):
         if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
@@ -222,14 +220,22 @@ class GameScreen(Screen):
                 self.hint_button.text = "No hints available!"
                 self.hint_button.disabled = True
                 
-    def play_bomb_sound(self):
+    def play_end_game_sound(self):
         if self.bg_music:  
             self.bg_music.stop()
         
-        self.bg_music = SoundLoader.load("soundeffect/bomb.mp3")
-        if self.bg_music:
-            self.bg_music.volume = 0.2
-            self.bg_music.play()  
+        if self.game_board.win == True:
+            self.bg_music = SoundLoader.load("soundeffect/win.mp3")
+            if self.bg_music:
+                self.bg_music.volume = 0.6
+                self.bg_music.play()  
+                self.game_board.win = False
+        else:
+            self.bg_music = SoundLoader.load("soundeffect/bomb.mp3")
+            if self.bg_music:
+                self.bg_music.volume = 0.2
+                self.bg_music.play()  
+                self.game_board.win = False
         
 
     def toggle_pause(self, instance):

@@ -27,6 +27,7 @@ class MinesweeperGame(GridLayout):
         self.mine_numbers = self.calculate_mine_numbers()
         self.score = 0 
         self.score_update_callback = None  
+        self.win = False
 
 
         with self.canvas.before:
@@ -176,6 +177,7 @@ class MinesweeperGame(GridLayout):
         unopened_cells = sum(1 for btn, _ in self.buttons if not btn.disabled)
 
         if unopened_cells == len(self.mines): 
+            self.win = True
             self.game_over = True
             self.show_popup("YOU WIN!", f"CONGRATS!\nYour Score: {self.score}")
 
