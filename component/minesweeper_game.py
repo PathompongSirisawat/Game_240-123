@@ -34,14 +34,14 @@ class MinesweeperGame(GridLayout):
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.bind(size=self.update_background, pos=self.update_background)
-        
+
         self.buttons = []
         for i in range(self.rows * self.cols):
             btn = Button(background_color=(0.54, 0.79, 0.22, 1), background_normal="", disabled=False)
             btn.bind(on_press=self.handle_click)
             self.add_widget(btn)
             self.buttons.append((btn, i))
-                
+
     def calculate_mine_numbers(self):
         mine_numbers = {}
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
@@ -67,7 +67,7 @@ class MinesweeperGame(GridLayout):
     def update_background(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
-    
+
     def toggle_flag(self, instance):
         if self.game_over:
             return
@@ -80,10 +80,10 @@ class MinesweeperGame(GridLayout):
         elif instance.text == "Flag":
             instance.text = ""
             self.remaining_flags += 1
-        
+
         if self.flag_update_callback:
             self.flag_update_callback(self.remaining_flags)
-    
+
     def reveal_cell(self, instance):
         if self.game_over:
             return
@@ -93,7 +93,7 @@ class MinesweeperGame(GridLayout):
                 if index in self.mines:
                     btn.markup = True
                     btn.background_normal = "image/bomb.jpg"
-                
+
                     self.show_popup("YOU LOSE!", f"Oh No! You pressed the BOMB!\nYour Score: {self.score}")
                     self.reveal_all()
                     self.game_over = True
@@ -105,7 +105,7 @@ class MinesweeperGame(GridLayout):
                     self.check_win()
                 break
 
-                
+
     def reveal_all(self):
         self.game_over = True
         for btn, index in self.buttons:
@@ -124,7 +124,7 @@ class MinesweeperGame(GridLayout):
                 else:
                     btn.disabled = True  
 
-    
+
     def update_score(self):
         if not self.game_over:
             self.score += 10  # เพิ่ม 10 คะแนนต่อช่องที่เปิดได้
@@ -144,7 +144,7 @@ class MinesweeperGame(GridLayout):
             def blink(dt):
                 btn.background_color = (1, 1, 0, 1)  
             Clock.schedule_once(lambda dt: setattr(btn, 'background_color', (0.54, 0.79, 0.22, 1)), 0.5)
-        
+
         Clock.schedule_once(blink, 0)
     def is_adjacent_to_mine(self, index):
         row, col = divmod(index, self.cols)
@@ -169,7 +169,7 @@ class MinesweeperGame(GridLayout):
             else:
                 btn.text = " "
                 self.reveal_safe_area(index)  
-            
+
         btn.disabled = True  
 
     def check_win(self):
@@ -184,20 +184,6 @@ class MinesweeperGame(GridLayout):
             if self.flag_update_callback:
                 self.flag_update_callback(0)  # รีเซ็ตจำนวนธง
             self.hint_button.disabled = True
-    
-    def restart_game(self, instance=None):
-        parent = self.parent
-        if parent:
-            parent.remove_widget(self)
-        
-            new_game = MinesweeperGame(rows=self.rows, cols=self.cols)
-            new_game.score_update_callback = self.score_update_callback  
-
-            new_game.size_hint = self.size_hint
-            new_game.size = self.size
-            new_game.pos = self.pos
-
-            parent.add_widget(new_game)
 
     def show_popup(self, title, message):
         box = BoxLayout(orientation='vertical', spacing=10, padding=20)
@@ -206,18 +192,10 @@ class MinesweeperGame(GridLayout):
         content_layout.bind(minimum_height=content_layout.setter('height'))  
 
         new_icon = Image(source="image/success.png" if "WIN" in title else "image/lose.png",
-                     size_hint=(None, None), size=(80, 80))
+                      size_hint=(None, None), size=(80, 80))
 
         new_label = Label(text=message, font_size=22, bold=True, color=(0, 0, 0, 1), size_hint_y=None, height=50)
-
-
-        restart_button = Button(
-            text="🔄 Restart", size_hint=(None, None), size=(160, 50),
-            background_color=(0.2, 0.6, 1, 1), 
-            color=(1, 1, 1, 1), 
-            font_size=18, bold=True
-        )
-
+ 
         popup = Popup(
             title=title,
             content=box,
@@ -226,19 +204,11 @@ class MinesweeperGame(GridLayout):
             background="popup_bg.png",
             separator_color=(1, 0.5, 0, 1),
         )
-        def close_and_restart(instance):
-            popup.dismiss() 
-            self.restart_game()  
-
-        restart_button.bind(on_press=close_and_restart)
-
+        
         box.add_widget(new_icon)
         box.add_widget(new_label)
-        box.add_widget(restart_button)
-
         popup.open()
 
-        
     def reveal_safe_area(self, start_index):
         queue = deque([start_index])
         visited = set()
@@ -268,13 +238,13 @@ class MinesweeperGame(GridLayout):
     def add_neighbors_to_queue(self, index, queue, visited):
         row, col = divmod(index, self.cols)
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
-        
+
         for dr, dc in directions:
             nr, nc = row + dr, col + dc
             neighbor_index = nr * self.cols + nc
             if 0 <= nr < self.rows and 0 <= nc < self.cols and neighbor_index not in visited:
                 queue.append(neighbor_index)
-    
+
     def get_number_hex_color(self, mine_count):
         colors = {
             1: "0000FF", 
@@ -286,20 +256,20 @@ class MinesweeperGame(GridLayout):
     def animate_button_press(self, btn):
         anim = Animation(size_hint=(1.1, 1.1), duration=0.1) + Animation(size_hint=(1, 1), duration=0.1)
         anim.start(btn)
-    
+
     def animate_reveal(self, btn, color):
         anim = Animation(background_color=color, duration=0.2)
         anim.start(btn)
-    
+
     def handle_click(self, instance):
         if self.game_over:
             return
-    
+
         if self.flag_mode:
             self.toggle_flag(instance)
         else:
             anim = Animation(background_color=(1, 1, 1, 1), duration=0.1) + \
                Animation(background_color=(0.7, 0.7, 0.7, 1), duration=0.1)
             anim.start(instance)  
-        
-        self.reveal_cell(instance)  
+
+        self.reveal_cell(instance)
