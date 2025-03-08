@@ -16,7 +16,7 @@ class GameScreen(Screen):
         super().__init__(**kwargs)
         Window.size = (800, 600)  
         Window.resizable = False
-        self.win_count = 0  # จำนวนครั้งที่ชนะ
+        self.win_count = 0  
         self.lose_count = 0 
         self.main_layout = BoxLayout(orientation="vertical")
 
@@ -63,9 +63,11 @@ class GameScreen(Screen):
 
         self.timer_label = Label(text="Time: 00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
         self.remaining_flags_label = Label(text="flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
+        self.stats_label = Label(text="Wins: 0 | Losses: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
 
         right_layout.add_widget(self.timer_label)
         right_layout.add_widget(self.remaining_flags_label)
+        right_layout.add_widget(self.stats_label)
 
         self.top_bar.add_widget(left_layout)
         self.top_bar.add_widget(center_layout)
@@ -204,7 +206,8 @@ class GameScreen(Screen):
         if self.timer_event:
             self.timer_event.cancel()
         if hasattr(self, "game_board") and self.game_board.game_over:  
-            self.play_end_game_sound() 
+            self.play_end_game_sound()
+            self.calculate_game_stat()
 
     def show_hint(self, instance):
         if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
@@ -229,13 +232,20 @@ class GameScreen(Screen):
             if self.bg_music:
                 self.bg_music.volume = 0.6
                 self.bg_music.play()  
-                self.game_board.win = False
         else:
             self.bg_music = SoundLoader.load("soundeffect/bomb.mp3")
             if self.bg_music:
                 self.bg_music.volume = 0.2
                 self.bg_music.play()  
-                self.game_board.win = False
+                
+                
+    def calculate_game_stat(self):
+        if self.game_board.win == True:
+            self.win_count += 1  
+        else:
+            self.lose_count += 1
+        self.update_stats_label()
+        self.game_board.win = False
         
 
     def toggle_pause(self, instance):
@@ -249,4 +259,10 @@ class GameScreen(Screen):
             else:
                 self.timer_event = Clock.schedule_interval(self.update_timer, 1)  
                 self.pause_button.text = "Pause"
-            
+    
+    def update_stats_label(self):
+         new_text = f"Wins: {self.win_count} | Losses: {self.lose_count}"
+         if self.stats_label.text != new_text:  
+            self.stats_label.text = new_text
+ 
+            Clock.schedule_once(lambda dt: setattr(self.stats_label, 'text', new_text))
