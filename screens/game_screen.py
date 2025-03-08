@@ -238,13 +238,3 @@ class GameScreen(Screen):
                 self.timer_event = Clock.schedule_interval(self.update_timer, 1)  
                 self.pause_button.text = "Pause"
             
-    def update_win_count(self):
-            self.win_count += 1
-            self.update_stats_label()
-
-    def update_stats_label(self):
-        new_text = f"Wins: {self.win_count} | Losses: {self.lose_count}"
-        if self.stats_label.text != new_text:  
-            self.stats_label.text = new_text
-
-            Clock.schedule_once(lambda dt: setattr(self.stats_label, 'text', new_text))
