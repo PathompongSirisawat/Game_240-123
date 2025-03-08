@@ -66,16 +66,6 @@ class MinesweeperGame(GridLayout):
     def update_background(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
-
-    def handle_click(self, instance):
-        if self.game_over:
-            return
-        
-        if self.flag_mode:
-            self.toggle_flag(instance)
-        else:
-            self.animate_button_press(instance)
-            self.reveal_cell(instance)
     
     def toggle_flag(self, instance):
         if self.game_over:
@@ -304,4 +294,3 @@ class MinesweeperGame(GridLayout):
             anim.start(instance)  
         
         self.reveal_cell(instance)  
-

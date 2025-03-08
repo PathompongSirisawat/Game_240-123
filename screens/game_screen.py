@@ -141,6 +141,9 @@ class GameScreen(Screen):
         self.stop_timer()
 
     def toggle_flag_mode(self, instance):
+        if self.game_board.game_over:  
+            return
+        
         self.flag_mode = not self.flag_mode
         if self.flag_mode:
             self.flag_mode_button.text = "Flag Mode"
@@ -210,6 +213,7 @@ class GameScreen(Screen):
             bomb_sound.play()  
 
     def toggle_pause(self, instance):
+        
         if self.timer_event:  
             if self.timer_event.is_triggered:  
                 self.timer_event.cancel()  
