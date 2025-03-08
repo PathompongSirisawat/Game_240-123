@@ -61,8 +61,8 @@ class GameScreen(Screen):
 
         right_layout = BoxLayout(size_hint_x=0.4, spacing=5, padding=[5, 0])
 
-        self.timer_label = Label(text="Time: 00:00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
-        self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
+        self.timer_label = Label(text="Time: 00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
+        self.remaining_flags_label = Label(text="flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
         self.stats_label = Label(text="Wins: 0 | Losses: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
 
         right_layout.add_widget(self.timer_label)
@@ -147,7 +147,7 @@ class GameScreen(Screen):
 
 
     def update_flag_count(self, remaining_flags):
-        self.remaining_flags_label.text = f"Remaining flags: {remaining_flags}"
+        self.remaining_flags_label.text = f"flags: {remaining_flags}"
 
     def go_back(self, instance):
         self.manager.current = "difficulty"
@@ -170,16 +170,16 @@ class GameScreen(Screen):
 
     def update_timer(self, dt):
         self.timer += 1
-        hours, remainder = divmod(self.timer, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        self.timer_label.text = f"Time: {hours:02}:{minutes:02}:{seconds:02}"
+        minutes, seconds = divmod(self.timer, 60)
+        self.timer_label.text = f"Time: {minutes:02}:{seconds:02}"
 
     def reset_timer(self):
         self.timer = 0
-        self.timer_label.text = "Time: 00:00:00"
+        self.timer_label.text = "Time: 00:00"
         if self.timer_event:
             self.timer_event.cancel()
         self.timer_event = Clock.schedule_interval(self.update_timer, 1)
+
 
     def reset_game(self, instance):
         if hasattr(self, "game_board"):
