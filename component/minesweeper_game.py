@@ -178,7 +178,7 @@ class MinesweeperGame(GridLayout):
         if unopened_cells == len(self.mines): 
             self.game_over = True
             self.show_popup("YOU WIN!", f"CONGRATS!\nYour Score: {self.score}")
-            
+
             if self.stop_timer_callback:
                 self.stop_timer_callback()  # หยุดเวลา
             if self.flag_update_callback:
@@ -198,8 +198,6 @@ class MinesweeperGame(GridLayout):
             new_game.pos = self.pos
 
             parent.add_widget(new_game)
-
-    
 
     def show_popup(self, title, message):
         box = BoxLayout(orientation='vertical', spacing=10, padding=20)
@@ -239,7 +237,6 @@ class MinesweeperGame(GridLayout):
         box.add_widget(restart_button)
 
         popup.open()
-
 
         
     def reveal_safe_area(self, start_index):

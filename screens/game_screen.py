@@ -141,10 +141,6 @@ class GameScreen(Screen):
         self.update_flag_count(self.game_board.remaining_flags)
 
         self.reset_timer()
-    def update_win_count(self):
-            self.win_count += 1
-            self.update_stats_label()
-
 
     def update_flag_count(self, remaining_flags):
         self.remaining_flags_label.text = f"flags: {remaining_flags}"
@@ -180,7 +176,6 @@ class GameScreen(Screen):
             self.timer_event.cancel()
         self.timer_event = Clock.schedule_interval(self.update_timer, 1)
 
-
     def reset_game(self, instance):
         if hasattr(self, "game_board"):
             self.start_game(self.game_board.rows, self.game_board.cols)
@@ -207,7 +202,6 @@ class GameScreen(Screen):
         if hasattr(self, "game_board") and self.game_board.game_over:  
             self.lose_count += 1  # เพิ่มจำนวนครั้งที่แพ้
             self.update_stats_label()
-
 
     def show_hint(self, instance):
         if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
@@ -243,8 +237,14 @@ class GameScreen(Screen):
             else:
                 self.timer_event = Clock.schedule_interval(self.update_timer, 1)  
                 self.pause_button.text = "Pause"
-    
+            
+    def update_win_count(self):
+            self.win_count += 1
+            self.update_stats_label()
+
     def update_stats_label(self):
         new_text = f"Wins: {self.win_count} | Losses: {self.lose_count}"
         if self.stats_label.text != new_text:  
             self.stats_label.text = new_text
+
+            Clock.schedule_once(lambda dt: setattr(self.stats_label, 'text', new_text))
