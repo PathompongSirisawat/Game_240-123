@@ -100,14 +100,14 @@ class MinesweeperGame(GridLayout):
         for btn, index in self.buttons:
             if btn == instance and btn.text != "Flag":
                 if index in self.mines:
-                    btn.text = "B"
-                    btn.background_normal = "image/bomb.jpg" 
-                    btn.disabled = True  
+                    btn.markup = True
+                    btn.background_normal = "image/bomb.jpg"
+                
                     self.show_popup("YOU LOSE!", f"Oh No! You pressed the BOMB!\nYour Score: {self.score}")
                     self.reveal_all()
                     self.game_over = True
                     if self.stop_timer_callback:
-                        self.stop_timer_callback()  
+                        self.stop_timer_callback()
                     self.hint_button.disabled = True
                 else:
                     self.reveal_safe_area(index)
@@ -121,14 +121,15 @@ class MinesweeperGame(GridLayout):
             if btn.text == "Flag":
                 if index in self.mines:
                     btn.text = "True"
-                    btn.background_color = (0.6, 0.6, 0.6, 1)
+                    btn.background_color = (0.54, 0.79, 0.22, 1)
                 else:
                     btn.text = "False"
-                    btn.background_color = (0.7, 0.6, 0.6, 1)
+                    btn.background_color = (0.7, 0.5, 0.5, 1)
             elif not btn.text:  
                 if index in self.mines:
                     btn.text = ""
-                    btn.background_normal = "image/bomb.jpg"  
+                    btn.background_normal = "image/bomb.jpg" 
+                    btn.background_color = (0.5, 0.5, 0.5, 1) 
                 else:
                     btn.disabled = True  
 
