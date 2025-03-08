@@ -23,7 +23,7 @@ class GameScreen(Screen):
         self.top_bar = BoxLayout(size_hint_y=None, height=80, padding=[10, 10], spacing=10)
 
         with self.top_bar.canvas.before:
-            Color(0.8, 0.8, 0.8, 1)
+            Color(0.3, 0.6, 0.2, 1)
             self.top_bg = Rectangle(size=self.top_bar.size, pos=self.top_bar.pos)
         self.top_bar.bind(size=self.update_top_background, pos=self.update_top_background)
 
@@ -53,7 +53,10 @@ class GameScreen(Screen):
         left_layout.add_widget(reset_layout)
 
         center_layout = BoxLayout(size_hint_x=0.6, spacing=10, padding=[120, 0, 0, 0])
-        self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1))
+        self.title_label = Label(text="[b][color=#F7F2C3]Minesweeper[/color][/b]",  
+                                    markup=True,  
+                                    font_size=35,
+                                    font_name="fonts/PressStart2P-Regular.ttf")
         center_layout.add_widget(self.title_label)
 
         right_layout = BoxLayout(size_hint_x=0.4, spacing=5, padding=[5, 0])
@@ -74,7 +77,7 @@ class GameScreen(Screen):
 
         self.board_container = FloatLayout()
         with self.board_container.canvas.before:
-            Color(0.8, 0.8, 0.8, 1)
+            Color(0.3, 0.6, 0.2, 1)
             self.bg_rect = Rectangle(size=self.board_container.size, pos=self.board_container.pos)
 
         self.board_container.bind(size=self.update_background, pos=self.update_background)
@@ -194,7 +197,7 @@ class GameScreen(Screen):
             if self.bg_music:
                 self.bg_music.loop = True
                 self.bg_music.volume = 0.1
-                self.bg_music.play()  
+                self.bg_music.play()
 
     def stop_timer(self):
         if self.timer_event:
