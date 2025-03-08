@@ -59,7 +59,7 @@ class GameScreen(Screen):
         right_layout = BoxLayout(size_hint_x=0.4, spacing=5, padding=[5, 0])
 
         self.timer_label = Label(text="Time: 00:00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
-        self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
+        self.remaining_flags_label = Label(text="flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
         self.stats_label = Label(text="Wins: 0 | Losses: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
 
         right_layout.add_widget(self.timer_label)
@@ -144,7 +144,7 @@ class GameScreen(Screen):
 
 
     def update_flag_count(self, remaining_flags):
-        self.remaining_flags_label.text = f"Remaining flags: {remaining_flags}"
+        self.remaining_flags_label.text = f"flags: {remaining_flags}"
 
     def go_back(self, instance):
         self.manager.current = "difficulty"
