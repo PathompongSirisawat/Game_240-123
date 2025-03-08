@@ -14,12 +14,12 @@ class DifficultyScreen(Screen):
         layout = FloatLayout()
 
         with layout.canvas.before:
-            Color(0.8, 0.8, 0.8, 1)
+            Color(0.5, 0.7, 0.4, 1)
             self.bg_rect = Rectangle(size=layout.size, pos=layout.pos)
 
         layout.bind(size=self.update_background, pos=self.update_background)
 
-        title = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1),
+        title = Label(text="[b][color=#F7F2C3]Minesweeper[/color][/b]",markup=True, font_size=30,font_name="fonts/PressStart2P-Regular.ttf",
                     size_hint=(1, None), height=80, pos_hint={"center_x": 0.5, "center_y": 0.92})
         layout.add_widget(title)
 
@@ -32,7 +32,7 @@ class DifficultyScreen(Screen):
         for text, rows, cols, pos_y in difficulties:
             button = HoverButton(text=text, size_hint=(0.5, None), height=80,
                                 pos_hint={"center_x": 0.5, "center_y": pos_y},
-                                background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+                                background_color= (247/255, 242/255, 195/255, 1), background_normal='')
             button.bind(on_press=self.create_select_difficulty_callback(button, text, rows, cols))
             self.difficulty_buttons.append(button)
             layout.add_widget(button)

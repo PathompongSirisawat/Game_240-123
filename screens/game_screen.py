@@ -198,7 +198,6 @@ class GameScreen(Screen):
             self.play_bomb_sound() 
         if hasattr(self, "game_board") and self.game_board.game_over:  
             self.lose_count += 1  # เพิ่มจำนวนครั้งที่แพ้
-            self.update_stats_label()
 
     def show_hint(self, instance):
         if self.game_board.game_over:  # ถ้าเกมจบ ห้ามใช้ Hint
