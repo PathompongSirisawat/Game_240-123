@@ -14,7 +14,7 @@ from component.minesweeper_game import MinesweeperGame
 class GameScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Window.size = (800, 600)  # กำหนดขนาดเริ่มต้น (ปรับตามต้องการ)
+        Window.size = (800, 600)  
         Window.resizable = False
         self.win_count = 0  # จำนวนครั้งที่ชนะ
         self.lose_count = 0 
@@ -27,46 +27,49 @@ class GameScreen(Screen):
             self.top_bg = Rectangle(size=self.top_bar.size, pos=self.top_bar.pos)
         self.top_bar.bind(size=self.update_top_background, pos=self.update_top_background)
 
+        left_layout = BoxLayout(size_hint_x=0.2, spacing=10, padding=[10, 0])
+
         back_layout = RelativeLayout(size_hint=(None, None), size=(50, 50))
         back_icon = Image(source="image/back_icon.png", size_hint=(None, None), size=(50, 50))
         back_layout.add_widget(back_icon)
 
         self.back_button = Button(size_hint=(None, None), size=(50, 50),
-                                  background_color=(0, 0, 0, 0),  # ทำให้ปุ่มโปร่งใส
-                                  background_normal='')
+                          background_color=(0, 0, 0, 0),
+                          background_normal='')
         back_layout.add_widget(self.back_button)
         self.back_button.bind(on_press=self.go_back)
 
-        self.top_bar.add_widget(back_layout)
-
-        # Create the reset button with an image
         reset_layout = RelativeLayout(size_hint=(None, None), size=(50, 50))
         reset_icon = Image(source="image/reset_icon.png", size_hint=(None, None), size=(50, 50))
         reset_layout.add_widget(reset_icon)
 
         self.reset_button = Button(size_hint=(None, None), size=(50, 50),
-                                   background_color=(0, 0, 0, 0),  # ทำให้ปุ่มโปร่งใส
-                                   background_normal='')
+                           background_color=(0, 0, 0, 0),
+                           background_normal='')
         reset_layout.add_widget(self.reset_button)
         self.reset_button.bind(on_press=self.reset_game)
 
-        self.top_bar.add_widget(reset_layout)
+        left_layout.add_widget(back_layout)
+        left_layout.add_widget(reset_layout)
 
-        self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1), size_hint_x=2)
-        self.top_bar.add_widget(self.title_label)
-        
+        center_layout = BoxLayout(size_hint_x=0.6, spacing=10, padding=[120, 0, 0, 0])
+        self.title_label = Label(text="Minesweeper", font_size=30, color=(0, 0, 0, 1))
+        center_layout.add_widget(self.title_label)
+
+        right_layout = BoxLayout(size_hint_x=0.4, spacing=5, padding=[5, 0])
+
         self.timer_label = Label(text="Time: 00:00:00", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=150)
-        
         self.remaining_flags_label = Label(text="Remaining flags: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
-        
-        right_layout = BoxLayout(size_hint_x=None, width=460)
+        self.stats_label = Label(text="Wins: 0 | Losses: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
+
         right_layout.add_widget(self.timer_label)
         right_layout.add_widget(self.remaining_flags_label)
-        
+        right_layout.add_widget(self.stats_label)
+
+        self.top_bar.add_widget(left_layout)
+        self.top_bar.add_widget(center_layout)
         self.top_bar.add_widget(right_layout)
 
-        self.stats_label = Label(text="Wins: 0 | Losses: 0", font_size=20, color=(0, 0, 0, 1), size_hint_x=None, width=200)
-        self.top_bar.add_widget(self.stats_label)
         self.main_layout.add_widget(self.top_bar)
 
         self.board_container = FloatLayout()
