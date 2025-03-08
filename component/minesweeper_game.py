@@ -8,6 +8,7 @@ from collections import deque
 from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
+from kivy.clock import Clock
 
 class MinesweeperGame(GridLayout):
     def __init__(self, rows=8, cols=8, **kwargs):
@@ -128,8 +129,7 @@ class MinesweeperGame(GridLayout):
         if not self.game_over:
             self.score += 10  # เพิ่ม 10 คะแนนต่อช่องที่เปิดได้
             if self.score_update_callback:
-                self.score_update_callback(self.score)
-
+                Clock.schedule_once(lambda dt: self.score_update_callback(self.score), 0)
     def give_hint(self):
         if self.game_over:
             return
@@ -184,8 +184,18 @@ class MinesweeperGame(GridLayout):
             self.hint_button.disabled = True
     
     def restart_game(self, instance=None):
-        self.clear_widgets()  
-        self.__init__(rows=self.rows, cols=self.cols)  # 
+        parent = self.parent
+        if parent:
+            parent.remove_widget(self)
+        
+            new_game = MinesweeperGame(rows=self.rows, cols=self.cols)
+            new_game.score_update_callback = self.score_update_callback  
+            
+            new_game.size_hint = self.size_hint
+            new_game.size = self.size
+            new_game.pos = self.pos
+
+            parent.add_widget(new_game)
 
     
 
