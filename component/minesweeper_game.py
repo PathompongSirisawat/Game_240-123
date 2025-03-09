@@ -95,7 +95,7 @@ class MinesweeperGame(GridLayout):
                     btn.markup = True
                     btn.background_normal = "image/bomb.jpg"
 
-                    self.show_popup("YOU LOSE!", f"Oh No! You pressed the BOMB!\nYour Score: {self.score}")
+                    self.show_popup("YOU LOSE!", f"Oh No! You pressed the\n human eater plant\nYour Score: {self.score}")
                     self.reveal_all()
                     self.game_over = True
                     if self.stop_timer_callback:
@@ -120,7 +120,7 @@ class MinesweeperGame(GridLayout):
             elif not btn.text:  
                 if index in self.mines:
                     btn.text = ""
-                    btn.background_normal = "image/bomb.jpg" 
+                    btn.background_normal = "image/plant.png" 
                     btn.background_color = (0.5, 0.5, 0.5, 1) 
                 else:
                     btn.disabled = True  
