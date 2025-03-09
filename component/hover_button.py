@@ -6,12 +6,12 @@ class HoverButton(Button, HoverBehavior):
         super(HoverButton, self).__init__(**kwargs)
 
     def on_enter(self):
-        if self.background_color != [0.3, 0.3, 0.3, 1]:
-            self.background_color = [0.4, 0.4, 0.4, 1]
+        if self.background_color != "#689f38":  
+            self.background_color = "#33691e"  
 
     def on_leave(self):
-        if self.background_color != [0.3, 0.3, 0.3, 1]:
-            self.background_color = [0.5, 0.5, 0.5, 1]
+        if self.background_color != "#689f38":  
+            self.background_color = "#33691e"  
 
     def on_press(self):
-        self.background_color = [0.3, 0.3, 0.3, 1]
+        self.background_color = "#689f38"  

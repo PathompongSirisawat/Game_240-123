@@ -36,7 +36,7 @@ class DifficultyScreen(Screen):
         for text, rows, cols, pos_y in difficulties:
             button = HoverButton(text=text, size_hint=(0.5, None), height=80,
                                 pos_hint={"center_x": 0.5, "center_y": pos_y},
-                                background_color= (247/255, 242/255, 195/255, 1), background_normal='')
+                                background_color= "#689f38", background_normal='')
             button.bind(on_press=self.create_select_difficulty_callback(button, text, rows, cols))
             self.difficulty_buttons.append(button)
             layout.add_widget(button)
