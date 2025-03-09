@@ -38,7 +38,7 @@ class MinesweeperGame(GridLayout):
 
         self.buttons = []
         for i in range(self.rows * self.cols):
-            btn = Button(background_color=(0.54, 0.79, 0.22, 1), background_normal="", disabled=False)
+            btn = Button(background_color= "#B8926A", background_normal="", disabled=False)
             btn.bind(on_press=self.handle_click)
             self.add_widget(btn)
             self.buttons.append((btn, i))

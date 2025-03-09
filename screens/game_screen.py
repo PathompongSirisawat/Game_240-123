@@ -23,7 +23,7 @@ class GameScreen(Screen):
         self.top_bar = BoxLayout(size_hint_y=None, height=80, padding=[10, 10], spacing=10)
 
         with self.top_bar.canvas.before:
-            Color(0.3, 0.6, 0.2, 1)
+            Color(0.5, 0.7, 0.4, 1)
             self.top_bg = Rectangle(size=self.top_bar.size, pos=self.top_bar.pos)
         self.top_bar.bind(size=self.update_top_background, pos=self.update_top_background)
 
@@ -77,7 +77,7 @@ class GameScreen(Screen):
 
         self.board_container = FloatLayout()
         with self.board_container.canvas.before:
-            Color(0.3, 0.6, 0.2, 1)
+            Color(0.5, 0.7, 0.4, 1)
             self.bg_rect = Rectangle(size=self.board_container.size, pos=self.board_container.pos)
 
         self.board_container.bind(size=self.update_background, pos=self.update_background)
@@ -240,7 +240,7 @@ class GameScreen(Screen):
         else:
             self.bg_music = SoundLoader.load("soundeffect/OOF.mp3")
             if self.bg_music:
-                self.bg_music.volume = 0.2
+                self.bg_music.volume = 1
                 self.bg_music.play()  
                 
                 
