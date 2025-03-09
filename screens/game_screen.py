@@ -148,6 +148,10 @@ class GameScreen(Screen):
         self.manager.current = "difficulty"
         self.stop_timer()
         
+        self.hint_counter = 0
+        self.hint_button.text = f"Hint ({self.max_hints})"
+        self.hint_button.disabled = False
+        
         if self.bg_music:
             self.bg_music.stop()
 
@@ -156,6 +160,7 @@ class GameScreen(Screen):
             self.bg_music.loop = True
             self.bg_music.volume = 0.5
             self.bg_music.play()
+        
 
     def toggle_flag_mode(self, instance):
         if self.game_board.game_over:  
