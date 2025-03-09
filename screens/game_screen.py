@@ -53,7 +53,7 @@ class GameScreen(Screen):
         left_layout.add_widget(reset_layout)
 
         center_layout = BoxLayout(size_hint_x=0.6, spacing=10, padding=[120, 0, 0, 0])
-        self.title_label = Label(text="[b][color=#F7F2C3]Minesweeper[/color][/b]",  
+        self.title_label = Label(text="[b][color=#F7F2C3]Gardensweeper[/color][/b]",  
                                     markup=True,  
                                     font_size=35,
                                     font_name="fonts/PressStart2P-Regular.ttf")

@@ -21,7 +21,7 @@ class DifficultyScreen(Screen):
 
         layout.bind(size=self.update_background, pos=self.update_background)
 
-        self.title_label = Label(text="[b][color=#F7F2C3]Minesweeper[/color][/b]",markup=True, font_size=30,font_name="fonts/PressStart2P-Regular.ttf",
+        self.title_label = Label(text="[b][color=#F7F2C3]Gardensweeper[/color][/b]",markup=True, font_size=30,font_name="fonts/PressStart2P-Regular.ttf",
                     size_hint=(1, None), height=80, pos_hint={"center_x": 0.5, "center_y": 0.92})
         layout.add_widget(self.title_label)
 
@@ -44,8 +44,8 @@ class DifficultyScreen(Screen):
         box_layout = BoxLayout(orientation='horizontal', size_hint=(0.5, None), height=80,
                                pos_hint={"center_x": 0.5, "center_y": 0.2})
 
-        self.difficulty_label = Label(text="Select Difficulty", font_size=20, color=(0, 0, 0, 1),
-                                      size_hint=(0.6, 1))
+        self.difficulty_label = Label(text="Select Difficulty",font_size=20, color=(0, 0, 0, 1),
+                                      size_hint=(0.4, 1))
         box_layout.add_widget(self.difficulty_label)
 
         start_button = Button(text="Start", size_hint=(0.4, 1),
