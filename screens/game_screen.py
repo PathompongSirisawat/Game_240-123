@@ -96,7 +96,7 @@ class GameScreen(Screen):
         bottom_layout.add_widget(self.hint_button)
 
         self.flag_mode_button = Button(text="Bomb Mode", size_hint=(0.2, 1),
-                                       background_color=(0.6, 0.6, 0.6, 1), background_normal='')
+                                       background_color=(0.6, 0.2, 0.2, 1), background_normal='')
         self.flag_mode_button.bind(on_press=self.toggle_flag_mode)
         bottom_layout.add_widget(self.flag_mode_button)
 
@@ -238,7 +238,7 @@ class GameScreen(Screen):
                 self.bg_music.volume = 0.6
                 self.bg_music.play()  
         else:
-            self.bg_music = SoundLoader.load("soundeffect/bomb.mp3")
+            self.bg_music = SoundLoader.load("soundeffect/OOF.mp3")
             if self.bg_music:
                 self.bg_music.volume = 0.2
                 self.bg_music.play()  
