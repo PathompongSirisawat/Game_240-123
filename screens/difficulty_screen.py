@@ -5,6 +5,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 from component.hover_button import HoverButton
+from kivy.animation import Animation
+from kivy.clock import Clock
 
 class DifficultyScreen(Screen):
     def __init__(self, **kwargs):
@@ -19,9 +21,11 @@ class DifficultyScreen(Screen):
 
         layout.bind(size=self.update_background, pos=self.update_background)
 
-        title = Label(text="[b][color=#F7F2C3]Minesweeper[/color][/b]",markup=True, font_size=30,font_name="fonts/PressStart2P-Regular.ttf",
+        self.title_label = Label(text="[b][color=#F7F2C3]Minesweeper[/color][/b]",markup=True, font_size=30,font_name="fonts/PressStart2P-Regular.ttf",
                     size_hint=(1, None), height=80, pos_hint={"center_x": 0.5, "center_y": 0.92})
-        layout.add_widget(title)
+        layout.add_widget(self.title_label)
+
+        self.animate_title()
 
         difficulties = [
             ("Low", 8, 8, 0.75),
@@ -85,3 +89,11 @@ class DifficultyScreen(Screen):
         print(f"Switching to game screen with {rows}x{cols}")
         self.manager.get_screen("game").start_game(rows, cols)
         self.manager.current = "game"
+    
+    def animate_title(self):
+        def start_anim(*args):
+            anim = Animation(font_size=40, duration=1) + Animation(font_size=30, duration=1)
+            anim &= Animation(color=(1, 1, 0, 1), duration=1) + Animation(color=(1, 1, 1, 1), duration=0.5)
+            anim.start(self.title_label)
+
+        Clock.schedule_interval(start_anim, 2)
